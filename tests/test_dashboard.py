@@ -71,6 +71,12 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("Cloud compilation:", self.html)
         self.assertIn("Not connected", self.html)
 
+    def test_json_import_is_bounded_and_validated(self):
+        self.assertIn("file.size > 1024 * 1024", self.html)
+        self.assertIn("incoming.length > 100", self.html)
+        self.assertIn('["web", "android-apk", "windows-exe"]', self.html)
+        self.assertIn('confirm("Import "', self.html)
+
     def test_dashboard_warns_against_entering_secrets(self):
         for phrase in ("access tokens", "private keys", "signing keys"):
             self.assertIn(phrase, self.html)
