@@ -69,10 +69,12 @@ jobs:
           PY
 
       - name: Package static website
+        env:
+          PROJECT_PATH: ${{ inputs.project_path }}
         run: |
           python build-lab/scripts/package_web.py \
             --source project-source \
-            --project-path "${{ inputs.project_path }}" \
+            --project-path "$PROJECT_PATH" \
             --output build-output/web-project.zip
 
       - name: Upload downloadable ZIP
