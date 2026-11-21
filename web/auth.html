@@ -10,9 +10,9 @@
 h1{font-size:25px;letter-spacing:-.7px;margin:0 0 7px}.sub{color:var(--muted);font-size:12px;margin:0 0 22px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;padding:4px;background:var(--soft);border-radius:12px;margin-bottom:20px}.tabs button{border:0;border-radius:9px;padding:10px;background:transparent;color:var(--muted);font:inherit;font-weight:750;cursor:pointer}.tabs button.active{background:white;color:var(--accent);box-shadow:0 2px 8px #30295a12}
 form{display:grid;gap:13px}label{display:grid;gap:6px;font-size:11px;color:var(--muted);font-weight:750}input{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:#fbfaff;color:var(--ink);font:inherit;font-size:13px;outline:none}input:focus{border-color:#988bf0;box-shadow:0 0 0 3px #9284ed22}
-button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradient(120deg,#7668df,#9385ee);color:white;font:inherit;font-weight:800;cursor:pointer;margin-top:4px}
+button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradient(120deg,#7668df,#9385ee);color:white;font:inherit;font-weight:800;cursor:pointer;margin-top:4px}button.submit:disabled{opacity:.6;cursor:wait}
 .note{margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);color:var(--muted);font-size:11px;line-height:1.55}
-.status{min-height:20px;color:#b45b62;font-size:12px;margin-top:10px}.back{display:block;text-align:center;margin-top:18px;color:var(--accent);font-size:12px;font-weight:750;text-decoration:none}
+.status{min-height:20px;color:#b45b62;font-size:12px;margin-top:10px}.status.success{color:#24835f}.back{display:block;text-align:center;margin-top:18px;color:var(--accent);font-size:12px;font-weight:750;text-decoration:none}
 [hidden]{display:none!important}
 </style></head><body>
 <main class="card">
@@ -25,30 +25,61 @@ button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradien
   <label id="confirmWrap" hidden>Подтвердите пароль<input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Повторите пароль"></label>
   <button class="submit" id="submit" type="submit">Войти</button>
  </form>
- <div class="status" id="status" role="status"></div>
- <div class="note">Интерфейс входа и регистрации готов. Реальная проверка имени пользователя и пароля пока не подключена: для неё нужен серверный модуль аккаунтов и база профилей. Пароли не сохраняются в браузере и не отправляются в демонстрационный режим.</div>
+ <div class="status" id="status" role="status" aria-live="polite"></div>
+ <div class="note" id="setupNote">Для работы аккаунтов администратор сайта должен один раз подключить Supabase. После настройки здесь будет настоящая регистрация и вход; пароли обрабатывает Supabase Auth, а не сайт.</div>
  <a class="back" href="./index.html">← Вернуться в GPT Build Lab</a>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
 <script>
 (()=>{
- const $=id=>document.getElementById(id);let mode="login";
+ const $=id=>document.getElementById(id);let mode="login",client=null,busy=false;
+ const config=window.GBL_SUPABASE_CONFIG||{};
+ const validConfig=typeof config.url==="string"&&/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.url)&&typeof config.anonKey==="string"&&config.anonKey.length>20&&!config.anonKey.includes("YOUR_");
+ if(validConfig&&window.supabase?.createClient)client=window.supabase.createClient(config.url,config.anonKey);
+ if(!client){$("setupNote").textContent="Подключение Supabase ещё не настроено. Заполни web/supabase-config.js и выполни SQL-инструкцию из документации проекта. До этого регистрация и вход недоступны."}
+ function setStatus(message,success=false){$("status").textContent=message;$("status").classList.toggle("success",success)}
  function setMode(next){
   mode=next;const registering=mode==="register";
   $("loginTab").classList.toggle("active",!registering);$("registerTab").classList.toggle("active",registering);
   $("title").textContent=registering?"Создать аккаунт":"С возвращением";
-  $("subtitle").textContent=registering?"Зарегистрируй имя пользователя для GPT Build Lab.":"Войди в своё рабочее пространство.";
+  $("subtitle").textContent=registering?"Выбери уникальное имя пользователя для GPT Build Lab.":"Войди в своё рабочее пространство.";
   $("confirmWrap").hidden=!registering;$("confirmPassword").required=registering;
   $("password").autocomplete=registering?"new-password":"current-password";
-  $("submit").textContent=registering?"Зарегистрироваться":"Войти";$("status").textContent="";
+  $("submit").textContent=registering?"Зарегистрироваться":"Войти";setStatus("");
  }
  $("loginTab").addEventListener("click",()=>setMode("login"));
  $("registerTab").addEventListener("click",()=>setMode("register"));
- $("authForm").addEventListener("submit",e=>{
-  e.preventDefault();const username=$("username").value.trim(),password=$("password").value;
-  if(!/^[A-Za-z0-9_.-]{3,24}$/.test(username)){ $("status").textContent="Имя пользователя: 3–24 символа, латинские буквы, цифры, точка, дефис или _.";return}
-  if(password.length<8){$("status").textContent="Пароль должен содержать не менее 8 символов.";return}
-  if(mode==="register"&&password!==$("confirmPassword").value){$("status").textContent="Пароли не совпадают.";return}
-  $("status").textContent="Сервер аккаунтов ещё не подключён. Данные не сохранены, вход не выполнен.";
+ $("authForm").addEventListener("submit",async e=>{
+  e.preventDefault();if(busy)return;
+  const username=$("username").value.trim().toLowerCase(),password=$("password").value;
+  if(!/^[a-z0-9_.-]{3,24}$/.test(username)){setStatus("Имя: 3–24 символа, латинские буквы, цифры, точка, дефис или _.");return}
+  if(password.length<8){setStatus("Пароль должен содержать не менее 8 символов.");return}
+  if(mode==="register"&&password!==$("confirmPassword").value){setStatus("Пароли не совпадают.");return}
+  if(!client){setStatus("Сервер аккаунтов не настроен. Следуй инструкции по подключению Supabase.");return}
+  busy=true;$("submit").disabled=true;setStatus(mode==="register"?"Создаём аккаунт…":"Проверяем данные…");
+  try{
+   const internalEmail=username+"@accounts.gptbuildlab.invalid";
+   if(mode==="register"){
+    const {data,error}=await client.auth.signUp({email:internalEmail,password,options:{data:{username}}});
+    if(error)throw error;
+    if(!data.session){setStatus("Пользователь создан, но Supabase ожидает подтверждение email. Для этой схемы включи Confirm email = OFF в настройках Supabase.");return}
+    setStatus("Аккаунт создан. Перенаправляем…",true);
+   }else{
+    const {data,error}=await client.auth.signInWithPassword({email:internalEmail,password});
+    if(error)throw error;
+    if(!data.session)throw new Error("Сеанс не создан. Попробуй ещё раз.");
+    setStatus("Вход выполнен. Перенаправляем…",true);
+   }
+   setTimeout(()=>location.href="./index.html",650);
+  }catch(error){
+   const raw=String(error?.message||"");
+   if(/already registered|already been registered|user already exists/i.test(raw))setStatus("Это имя уже занято. Попробуй другое.");
+   else if(/invalid login credentials/i.test(raw))setStatus("Неверное имя пользователя или пароль.");
+   else if(/username|profiles_username|gbl_handle_new_user/i.test(raw))setStatus("Не удалось создать профиль. Возможно, имя уже занято или SQL-миграция не применена.");
+   else setStatus(raw||"Не удалось выполнить запрос. Проверь подключение и настройки Supabase.");
+  }finally{busy=false;$("submit").disabled=false}
  });
+ if(client)client.auth.getSession().then(({data})=>{if(data.session)location.href="./index.html"});
 })();
 </script></body></html>
