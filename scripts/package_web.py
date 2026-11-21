@@ -14,8 +14,8 @@ import zipfile
 
 MAX_FILES = 10_000
 MAX_TOTAL_BYTES = 100 * 1024 * 1024
-EXCLUDED_DIRS = {".git", ".github", "node_modules", ".venv", "venv", "__pycache__", ".next", ".cache"}
-SECRET_NAMES = {".env", ".env.local", ".env.production", "id_rsa", "id_ed25519", "credentials.json"}
+EXCLUDED_DIRS = {".git", ".github", ".ssh", ".aws", ".azure", ".terraform", "node_modules", ".venv", "venv", "__pycache__", ".next", ".cache"}
+SECRET_NAMES = {".env", ".env.local", ".env.production", ".npmrc", ".pypirc", ".netrc", "id_rsa", "id_ed25519", "id_ecdsa", "id_dsa", "credentials.json", "secrets.json", "service-account.json", "terraform.tfstate"}
 SECRET_SUFFIXES = {".pem", ".key", ".p12", ".pfx", ".keystore", ".jks"}
 
 
