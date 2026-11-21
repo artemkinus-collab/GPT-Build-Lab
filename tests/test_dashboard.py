@@ -48,7 +48,7 @@ class DashboardTests(unittest.TestCase):
 
     def test_dashboard_has_unique_required_ids(self):
         self.assertEqual(len(self.audit.ids), len(set(self.audit.ids)))
-        for required in ("jobForm", "jobs", "jobCount", "exportAll"):
+        for required in ("jobForm", "jobs", "jobCount", "exportAll", "importDrafts", "importFile"):
             self.assertIn(required, self.audit.ids)
 
     def test_build_matrix_has_unique_targets(self):
