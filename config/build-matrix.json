@@ -1,0 +1,27 @@
+{
+  "project": "GPT Build Lab",
+  "schemaVersion": 1,
+  "targets": [
+    {
+      "id": "web",
+      "label": "Web",
+      "status": "prototype",
+      "runner": null,
+      "notes": "Browser dashboard and repository validation only; no production web build pipeline yet."
+    },
+    {
+      "id": "android-apk",
+      "label": "Android APK",
+      "status": "planned",
+      "runner": "github-actions-ubuntu",
+      "notes": "Requires a configured Android SDK and a project-specific Gradle build definition."
+    },
+    {
+      "id": "windows-exe",
+      "label": "Windows EXE",
+      "status": "planned",
+      "runner": "github-actions-windows",
+      "notes": "Requires a project-specific build toolchain and packaging configuration."
+    }
+  ]
+}
