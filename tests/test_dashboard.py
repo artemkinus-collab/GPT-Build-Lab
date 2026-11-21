@@ -1,4 +1,4 @@
-"""Regression tests for the GPT Build Lab dashboard."""
+"""Regression tests for the current GPT Build Lab dashboard."""
 import json
 import unittest
 from html.parser import HTMLParser
@@ -42,8 +42,17 @@ class DashboardTests(unittest.TestCase):
 
     def test_dashboard_has_unique_required_ids(self):
         self.assertEqual(len(self.audit.ids), len(set(self.audit.ids)))
-        for required in ("jobForm", "jobs", "jobCount", "exportAll", "importDrafts", "importFile", "draftBadge"):
+        for required in ("projectForm", "draftList", "searchDrafts", "importFile",
+                         "projectModal", "newProjectTop", "statTotal"):
             self.assertIn(required, self.audit.ids)
+
+    def test_navigation_order_and_custom_dropdowns(self):
+        order = ['data-page="home"', 'data-page="drafts"', 'data-page="statistics"',
+                 'data-page="github"', 'data-page="settings"', 'data-page="about"']
+        positions = [self.html.index(item) for item in order]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn('data-select="filterTarget"', self.html)
+        self.assertNotIn("<select", self.html.lower())
 
     def test_build_matrix_has_unique_targets(self):
         targets = self.matrix["targets"]
@@ -60,17 +69,16 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(targets["windows-exe"]["status"], "planned")
         self.assertEqual(targets["web"]["status"], "available")
 
-    def test_dashboard_discloses_build_scope(self):
-        self.assertIn("Build Engine v0.1", self.html)
-        self.assertIn("APK", self.html)
-        self.assertIn("пока не подключён", self.html)
-        self.assertIn("не запускает сборку", self.html)
+    def test_dashboard_discloses_real_build_scope(self):
+        self.assertIn("Упаковка статических сайтов", self.html)
+        self.assertIn("Сборка APK и EXE", self.html)
+        self.assertIn("не запускает пользовательские скрипты", self.html)
 
     def test_json_import_is_bounded_and_validated(self):
-        self.assertIn("file.size>1024*1024", self.html)
-        self.assertIn("incoming.length>100", self.html)
+        self.assertIn("f.size>1024*1024", self.html)
+        self.assertIn("arr.length>100", self.html)
         self.assertIn('["web","android-apk","windows-exe"]', self.html)
-        self.assertIn('confirm("Импортировать "+imported.length', self.html)
+        self.assertIn('confirm("Добавить "+incoming.length', self.html)
 
     def test_dashboard_warns_against_entering_secrets(self):
         for phrase in ("GitHub", "приватные ключи", "keystore"):
