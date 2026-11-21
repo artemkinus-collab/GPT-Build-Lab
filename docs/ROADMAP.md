@@ -24,6 +24,19 @@ This roadmap separates available features from planned integrations.
 - [x] Upload the artifact with a 7-day retention period.
 - [ ] Verify a real test repository end-to-end and record the run result.
 
+## Phase 2.5 — Accounts and dashboard-triggered Web builds
+
+- [x] Design Supabase Auth + Postgres account architecture.
+- [x] Add per-user projects/builds schema with Row Level Security.
+- [x] Add authenticated Edge Function to dispatch Web ZIP jobs.
+- [x] Add workflow callbacks for queued build status updates.
+- [ ] Create Supabase project, configure Email + GitHub OAuth, and deploy schema/function.
+- [ ] Configure server-side GitHub/Supabase secrets.
+- [ ] Add sign-in/sign-up UI and connect dashboard project storage.
+- [ ] Show per-user build history and live status refresh.
+- [ ] Provide authenticated artifact download from the dashboard.
+- [ ] Verify full end-to-end flow with a test repository.
+
 ## Phase 3 — Android APK pipeline
 
 - [ ] Select supported Android project formats (initially Gradle).
