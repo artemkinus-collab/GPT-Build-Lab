@@ -17,6 +17,10 @@ on:
         required: true
         default: .
         type: string
+      build_id:
+        description: Internal Build Lab build ID (leave empty for manual runs)
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -102,3 +106,20 @@ jobs:
             echo ""
             echo "This workflow packages static files only. It does not execute project scripts."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report build result to GPT Build Lab
+        if: always() && inputs.build_id != '' && vars.SUPABASE_FUNCTIONS_URL != ''
+        env:
+          BUILD_ID: ${{ inputs.build_id }}
+          BUILD_STATUS: ${{ job.status }}
+          CALLBACK_URL: ${{ vars.SUPABASE_FUNCTIONS_URL }}/build-callback
+          CALLBACK_SECRET: ${{ secrets.BUILD_CALLBACK_SECRET }}
+          ARTIFACT_NAME: gpt-build-lab-web-${{ github.run_number }}
+          WORKFLOW_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        continue-on-error: true
+        run: |
+          curl --fail-with-body --silent --show-error \
+            -X POST "$CALLBACK_URL" \
+            -H "Content-Type: application/json" \
+            -H "x-build-callback-secret: $CALLBACK_SECRET" \
+            -d "$(python -c 'import json,os; print(json.dumps({"build_id":os.environ["BUILD_ID"],"status":"completed" if os.environ["BUILD_STATUS"]=="success" else "failed","artifact_name":os.environ["ARTIFACT_NAME"],"workflow_url":os.environ["WORKFLOW_URL"]}))')"
