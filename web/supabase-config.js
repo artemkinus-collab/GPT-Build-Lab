@@ -5,5 +5,5 @@
  */
 window.GBL_SUPABASE_CONFIG = {
   url: "https://owwyewsgtauztkoiicvu.supabase.co",
-  anonKey: "YOUR_SUPABASE_ANON_OR_PUBLISHABLE_KEY"
+  anonKey: "sb_publishable_bf8WxPuRm-YluH9CksvZvQ_TdymGOcr"
 };
