@@ -43,16 +43,35 @@ class DashboardTests(unittest.TestCase):
     def test_dashboard_has_unique_required_ids(self):
         self.assertEqual(len(self.audit.ids), len(set(self.audit.ids)))
         for required in ("projectForm", "draftList", "searchDrafts", "importFile",
-                         "projectModal", "authOpen", "authModal", "authForm", "settingsAuthOpen", "statTotal"):
+                         "projectModal", "authOpen", "accountWrap", "accountOpen", "accountMenu", "statTotal"):
             self.assertIn(required, self.audit.ids)
 
 
     def test_account_entry_points_are_visible(self):
-        self.assertIn('id="authOpen"', self.html)
-        self.assertIn("Зарегистрироваться", self.html)
-        self.assertIn("Продолжить через GitHub", self.html)
-        self.assertIn("Аккаунт GPT Build Lab", self.html)
+        self.assertIn('href="auth.html"', self.html)
+        self.assertIn('id="accountOpen"', self.html)
+        self.assertIn('id="accountMenu"', self.html)
+        self.assertIn('id="accountSignOut"', self.html)
+        self.assertNotIn('id="authSignOut"', self.html)
+        self.assertNotIn('id="authModal"', self.html)
         self.assertNotIn('id="newProjectTop"', self.html)
+
+    def test_settings_are_grouped_and_avatar_is_customizable(self):
+        for section in ("appearance", "account", "data", "advanced"):
+            self.assertIn('data-settings-section="' + section + '"', self.html)
+            self.assertIn('data-settings-panel="' + section + '"', self.html)
+        self.assertIn('data-avatar="✦"', self.html)
+        self.assertIn('data-avatar="⚡"', self.html)
+
+    def test_dedicated_auth_page_uses_username_and_password(self):
+        auth = (ROOT / "web" / "auth.html").read_text(encoding="utf-8")
+        self.assertIn('id="username"', auth)
+        self.assertIn('id="password"', auth)
+        self.assertIn('id="confirmPassword"', auth)
+        self.assertIn("Зарегистрироваться", auth)
+        self.assertIn("Сервер аккаунтов ещё не подключён", auth)
+        self.assertNotIn('type="email"', auth)
+        self.assertNotIn("localStorage.setItem", auth)
 
     def test_navigation_order_and_custom_dropdowns(self):
         order = ['data-page="home"', 'data-page="drafts"', 'data-page="statistics"',
