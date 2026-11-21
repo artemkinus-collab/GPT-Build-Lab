@@ -41,6 +41,7 @@
     .job{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 13px;background:#0c1527;border:1px solid #293953;border-radius:12px}
     .job strong{display:block}.tag{font-size:11px;color:#b7c7e3;background:#25334e;border-radius:999px;padding:4px 8px;white-space:nowrap}
     .notice{padding:12px 14px;border-radius:12px;background:#2a2519;border:1px solid #594a2b;color:#f1d69a;font-size:12px;margin-top:14px}
+    .external{color:var(--cyan);font-size:12px;text-decoration:none}.external:hover{text-decoration:underline}
     .list{padding-left:18px;color:#c1cde1}.list li{margin:8px 0}
     footer{margin-top:20px;text-align:center;color:#7485a3;font-size:12px}
     @media(max-width:760px){.span-8,.span-4{grid-column:span 12}.platforms{grid-template-columns:1fr}header{align-items:flex-start}.hero{padding:23px}form{grid-template-columns:1fr}}
@@ -49,7 +50,7 @@
 <body>
   <main class="shell">
     <header>
-      <div class="brand"><div class="logo" aria-hidden="true">⌘</div><div><h1>GPT Build Lab</h1><div class="sub">Cloud build workspace · prototype 0.1</div></div></div>
+      <div class="brand"><div class="logo" aria-hidden="true">⌘</div><div><h1>GPT Build Lab</h1><div class="sub">Cloud build workspace · prototype 0.2</div></div></div>
       <div class="status">● Foundation online</div>
     </header>
     <section class="hero">
@@ -73,7 +74,7 @@
           <li>Draft jobs: <strong id="jobCount">0</strong></li>
           <li>Browser storage: <strong>Available</strong></li>
           <li>Cloud compilation: <strong>Not connected</strong></li>
-          <li>CI validation: <strong>Configured in GitHub</strong></li>
+          <li>CI validation: <strong>Configured</strong><br><a class="external" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions" target="_blank" rel="noopener noreferrer">View workflow runs ↗</a></li>
         </ul>
       </article>
       <article class="card span-8">
@@ -105,7 +106,7 @@
         <div id="jobs" class="jobs"><div class="muted small">No drafts yet. Create one above.</div></div>
       </article>
     </section>
-    <footer>GPT Build Lab · Prototype 0.1 · No credentials or source code are uploaded by this page.</footer>
+    <footer>GPT Build Lab · Prototype 0.2 · No credentials or source code are uploaded by this page.</footer>
   </main>
   <script>
     (() => {
