@@ -49,20 +49,20 @@
 
   <section class="hero">
     <div class="hero-inner">
-      <div class="eyebrow">Создавай · Проверяй · Публикуй</div>
+      <div class="eyebrow">Создавай · Проверяй · Запускай</div>
       <h2>Твои проекты заслуживают красивой сборочной лаборатории.</h2>
-      <p>Подготовь проект, запусти безопасную упаковку в облаке и получи ZIP-артефакт. GPT Build Lab постепенно превращается из панели планирования в настоящую build-платформу.</p>
+      <p>Подготовь проект, запусти безопасную упаковку в облаке и получи готовый архив. GPT Build Lab постепенно превращается из панели планирования в полноценную облачную платформу сборки.</p>
       <div class="hero-actions">
-        <a class="primary" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions/workflows/build-web.yml" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v18l15-9L5 3Z"/></svg> Открыть Web Build</a>
+        <a class="primary" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions/workflows/build-web.yml" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v18l15-9L5 3Z"/></svg> Открыть сборку сайта</a>
         <a class="secondary" href="#drafts">Мои проекты ↓</a>
       </div>
     </div>
   </section>
 
   <section class="stats" aria-label="Состояние лаборатории">
-    <div class="stat"><strong>01</strong><span>Реальный облачный Web-процесс</span></div>
+    <div class="stat"><strong>01</strong><span>Облачная сборка сайтов</span></div>
     <div class="stat"><strong id="jobCount">0</strong><span>Черновиков в этом браузере</span></div>
-    <div class="stat"><strong>7 дней</strong><span>Хранение ZIP-артефактов</span></div>
+    <div class="stat"><strong>7 дней</strong><span>Хранение архивов сборки</span></div>
   </section>
 
   <section class="layout">
@@ -70,50 +70,50 @@
       <article class="card">
         <div class="card-head"><div><h3>Выбери направление</h3><p class="caption">Возможности платформы и статус каждого направления</p></div><span class="badge green">Обновлено · 0.3</span></div>
         <div class="targets">
-          <div class="target"><div class="target-icon lav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3M8 9l-2 3 2 3m8-6 2 3-2 3"/></svg></div><strong>Web-проекты</strong><p>Проверка и упаковка статических сайтов</p><span class="badge green">Работает</span></div>
-          <div class="target"><div class="target-icon blu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4"/></svg></div><strong>Android APK</strong><p>Облачная сборка Android-проектов</p><span class="badge amber">В плане</span></div>
-          <div class="target"><div class="target-icon grn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div><strong>Windows EXE</strong><p>Сборка приложений под Windows</p><span class="badge amber">В плане</span></div>
+          <div class="target"><div class="target-icon lav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3M8 9l-2 3 2 3m8-6 2 3-2 3"/></svg></div><strong>Сайты</strong><p>Проверка и упаковка веб-сайтов</p><span class="badge green">Работает</span></div>
+          <div class="target"><div class="target-icon blu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4"/></svg></div><strong>Приложения Android</strong><p>Создание установочных файлов для Android</p><span class="badge amber">В плане</span></div>
+          <div class="target"><div class="target-icon grn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div><strong>Программы Windows</strong><p>Создание программ для Windows</p><span class="badge amber">В плане</span></div>
         </div>
       </article>
 
       <article class="card">
-        <div class="card-head"><div><h3>Запустить облачную Web-сборку</h3><p class="caption">Публичный GitHub-репозиторий → проверка → ZIP</p></div><span class="badge green">Build Engine v0.1</span></div>
+        <div class="card-head"><div><h3>Собрать сайт в облаке</h3><p class="caption">Открытый проект на GitHub → проверка → архив</p></div><span class="badge green">Модуль сборки · версия 0.1</span></div>
         <div class="steps">
-          <div class="step"><div class="stepnum">1</div><div><strong>Открой Web Build в GitHub Actions</strong><span>Нажми кнопку «Открыть Web Build» выше, затем Run workflow.</span></div></div>
-          <div class="step"><div class="stepnum">2</div><div><strong>Укажи репозиторий и ветку</strong><span>Например, octocat/hello-world и main. Репозиторий должен быть публичным.</span></div></div>
-          <div class="step"><div class="stepnum">3</div><div><strong>Получи ZIP-артефакт</strong><span>После успешной проверки скачай артефакт в разделе Artifacts запуска. Он хранится 7 дней.</span></div></div>
+          <div class="step"><div class="stepnum">1</div><div><strong>Открой сценарий сборки сайта в GitHub</strong><span>Нажми кнопку «Открыть сборку сайта» выше, затем выбери «Запустить сценарий».</span></div></div>
+          <div class="step"><div class="stepnum">2</div><div><strong>Укажи адрес проекта и ветку</strong><span>Например, octocat/hello-world и main. Проект должен быть открытым.</span></div></div>
+          <div class="step"><div class="stepnum">3</div><div><strong>Скачай готовый архив</strong><span>После успешной проверки скачай архив в разделе «Артефакты» запуска. Он хранится 7 дней.</span></div></div>
         </div>
-        <div class="hint">Сборщик пока упаковывает только статические сайты с index.html в корне выбранной папки. Он не запускает npm, shell-скрипты или другие команды из чужого проекта.</div>
+        <div class="hint">Сборщик пока упаковывает только статические сайты, в которых файл index.html находится в корне выбранной папки. Он не запускает установщики пакетов, командные сценарии или другие команды из стороннего проекта.</div>
       </article>
 
       <article class="card">
         <div class="card-head"><div><h3>Создать черновик проекта</h3><p class="caption">Локальная заметка — она не запускает сборку и не отправляется на сервер.</p></div></div>
         <form id="jobForm">
           <label>Название проекта<input id="project" maxlength="60" placeholder="Мой сайт" required></label>
-          <label>Целевая платформа<select id="target"><option value="web">Web</option><option value="android-apk">Android APK</option><option value="windows-exe">Windows EXE</option></select></label>
+          <label>Тип проекта<select id="target"><option value="web">Web</option><option value="android-apk">Android APK</option><option value="windows-exe">Windows EXE</option></select></label>
           <label class="wide">GitHub-репозиторий<input id="source" type="url" placeholder="https://github.com/owner/repository"></label>
-          <label>Профиль сборки<select id="profile"><option value="debug">Debug</option><option value="release">Release (планируется)</option></select></label>
+          <label>Режим сборки<select id="profile"><option value="debug">Проверочный</option><option value="release">Для выпуска (планируется)</option></select></label>
           <label>Заметка<input id="notes" maxlength="160" placeholder="Что нужно проверить?"></label>
-          <div class="wide form-actions"><button class="primary" type="submit">＋ Сохранить черновик</button><button class="secondary dark" type="button" id="exportAll">Экспорт JSON</button><button class="secondary dark" type="button" id="importDrafts">Импорт JSON</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
+          <div class="wide form-actions"><button class="primary" type="submit">＋ Сохранить черновик</button><button class="secondary dark" type="button" id="exportAll">Выгрузить данные</button><button class="secondary dark" type="button" id="importDrafts">Загрузить данные</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
         </form>
-        <div class="hint">Не добавляй сюда пароли, токены GitHub, приватные ключи и Android keystore. Публичный сайт и его код доступны посетителям.</div>
+        <div class="hint">Не добавляй сюда пароли, ключи доступа, закрытые ключи и ключи подписи Android. Открытый сайт и его код доступны всем посетителям.</div>
       </article>
 
       <article class="card" id="drafts">
-        <div class="card-head"><div><h3>Мои черновики</h3><p class="caption">Сохраняются в локальном хранилище этого браузера</p></div><span class="badge" id="draftBadge">0 записей</span></div>
+        <div class="card-head"><div><h3>Мои черновики</h3><p class="caption">Хранятся только в этом браузере</p></div><span class="badge" id="draftBadge">0 записей</span></div>
         <div id="jobs" class="jobs"><div class="empty">Пока пусто. Создай первый черновик выше.</div></div>
       </article>
     </div>
 
     <aside class="stack">
       <article class="card">
-        <h3>Что уже умеет лаборатория</h3>
+        <h3>Что уже умеет платформа</h3>
         <ul class="feature-list">
-          <li><span class="check">✓</span><span>Облачная упаковка статических Web-проектов в ZIP.</span></li>
-          <li><span class="check">✓</span><span>Проверка наличия index.html и структуры архива.</span></li>
+          <li><span class="check">✓</span><span>Облачная упаковка статических сайтов в архив.</span></li>
+          <li><span class="check">✓</span><span>Проверка наличия index.html и целостности архива.</span></li>
           <li><span class="check">✓</span><span>Защита от символических ссылок и файлов с секретами.</span></li>
           <li><span class="check">✓</span><span>Лимиты на размер и количество файлов.</span></li>
-          <li><span class="check">✓</span><span>Автоматические тесты и проверка кода.</span></li>
+          <li><span class="check">✓</span><span>Автоматические тесты и проверка исходного кода.</span></li>
           <li><span class="check">✓</span><span>Импорт и экспорт черновиков.</span></li>
         </ul>
       </article>
@@ -121,16 +121,16 @@
         <h3>Честный статус</h3>
         <p class="caption">Мы показываем только то, что действительно реализовано.</p>
         <ul class="feature-list">
-          <li><span class="check">●</span><span>Web ZIP: доступен через ручной запуск Actions.</span></li>
+          <li><span class="check">●</span><span>Сборка сайтов: доступна через ручной запуск сценария GitHub.</span></li>
           <li><span class="check">●</span><span>APK: ещё не подключён.</span></li>
           <li><span class="check">●</span><span>EXE: ещё не подключён.</span></li>
-          <li><span class="check">●</span><span>Автозапуск сборки прямо с сайта: пока не подключён.</span></li>
+          <li><span class="check">●</span><span>Запуск сборки прямо с сайта: пока не подключён.</span></li>
         </ul>
-        <a class="linkbtn" style="margin-top:16px" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions" target="_blank" rel="noopener noreferrer">История сборок ↗</a>
+        <a class="linkbtn" style="margin-top:16px" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions" target="_blank" rel="noopener noreferrer">История запусков ↗</a>
       </article>
     </aside>
   </section>
-  <footer>GPT Build Lab · Версия 0.3 · Сделано для открытой и безопасной разработки</footer>
+  <footer>GPT Build Lab · Версия 0.3 · Для открытой и безопасной разработки</footer>
 </main>
 <script>
 (() => {
@@ -154,8 +154,10 @@
     countNode.textContent = String(jobs.length);
     badgeNode.textContent = jobs.length + (jobs.length === 1 ? " запись" : " записей");
     if (!jobs.length) { jobsNode.innerHTML = '<div class="empty">Пока пусто. Создай первый черновик выше.</div>'; return; }
+    const targetNames = {web:"Сайт", "android-apk":"Приложение Android", "windows-exe":"Программа Windows"};
+  const profileNames = {debug:"Проверочный", release:"Для выпуска"};
     jobsNode.innerHTML = jobs.map((job,index) =>
-      '<div class="job"><div><strong>' + safe(job.project) + '</strong><span>' + safe(job.target) + ' · ' + safe(job.profile) + ' · ' + safe(new Date(job.createdAt).toLocaleString()) + '</span></div><div class="job-actions"><button class="secondary dark" type="button" data-export="' + index + '">JSON</button><button class="secondary dark" type="button" data-delete="' + index + '">Удалить</button></div></div>'
+      '<div class="job"><div><strong>' + safe(job.project) + '</strong><span>' + safe(targetNames[job.target] || job.target) + ' · ' + safe(profileNames[job.profile] || job.profile) + ' · ' + safe(new Date(job.createdAt).toLocaleString()) + '</span></div><div class="job-actions"><button class="secondary dark" type="button" data-export="' + index + '">JSON</button><button class="secondary dark" type="button" data-delete="' + index + '">Удалить</button></div></div>'
     ).join("");
   };
   const download = (data,filename) => {
