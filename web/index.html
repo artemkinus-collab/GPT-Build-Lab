@@ -52,7 +52,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}.hea
 </nav>
 
 <section class="page active" id="page-home">
- <div class="hero"><div class="hero-content"><div class="eyebrow">Рабочее пространство разработчика</div><h2>Все твои проекты — в одном месте.</h2><p>Создавай карточки проектов, следи за их состоянием и управляй локальными данными. Без декоративных функций и обещаний того, чего пока нет.</p><div class="hero-actions"><button class="btn primary" id="newProjectHero">＋ Создать проект</button><button class="btn" data-goto="drafts">Открыть черновики →</button></div></div></div>
+ <div class="hero"><div class="hero-content"><div class="eyebrow">Рабочее пространство разработчика</div><h2>Все твои проекты — в одном месте.</h2><p>Создавай карточки проектов, следи за их состоянием и управляй локальными данными. Без декоративных функций и обещаний того, чего пока нет.</p><div class="hero-actions"><button class="btn primary" id="newProjectHero">＋ Создать проект</button><button class="btn" data-goto="drafts">Открыть проекты →</button></div></div></div>
  <div class="grid">
   <div class="metric"><span class="metric-icon">▦</span><strong id="homeTotal">0</strong><span>Всего проектов</span></div>
   <div class="metric"><span class="metric-icon">⌁</span><strong id="homeWeb">0</strong><span>Веб-проекты</span></div>
@@ -82,7 +82,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}.hea
  <article class="card"><div class="settings-list">
   <div class="setting"><div><strong>Тёмная тема</strong><small>Переключить оформление сайта</small></div><input class="switch" type="checkbox" id="darkMode" aria-label="Тёмная тема"></div>
   <div class="setting"><div><strong>Подтверждать удаление</strong><small>Спрашивать перед удалением проекта</small></div><input class="switch" type="checkbox" id="confirmDelete" checked aria-label="Подтверждать удаление"></div>
-  <div class="setting"><div><strong>Экспортировать данные</strong><small>Скачать резервную копию всех черновиков в JSON</small></div><button class="btn small" id="settingsExport">Экспортировать</button></div>
+  <div class="setting"><div><strong>Экспортировать данные</strong><small>Скачать резервную копию всех проектов в JSON</small></div><button class="btn small" id="settingsExport">Экспортировать</button></div>
   <div class="setting"><div><strong>Импортировать данные</strong><small>Добавить проекты из ранее сохранённой копии</small></div><button class="btn small" id="settingsImport">Импортировать</button></div>
   <div class="setting"><div><strong>Очистить рабочее пространство</strong><small>Удалить все локально сохранённые проекты</small></div><button class="btn small danger" id="clearAll">Очистить</button></div>
  </div></article>
@@ -102,7 +102,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}.hea
 
 <section class="page" id="page-drafts">
  <div class="section-title"><div><h2>Проекты</h2><p>Локальная библиотека проектов этого браузера.</p></div><button class="btn primary" id="newProjectDrafts">＋ Новый проект</button></div>
- <div class="toolbar"><input class="field search" id="searchDrafts" type="search" placeholder="Поиск по названию или заметке…"><select class="field" data-select="filterTarget" data-value="all" style="max-width:190px"><button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false">Все типы <span>⌄</span></button><div class="select-menu" role="listbox"><button type="button" role="option" data-value="all" aria-selected="true">Все типы</button><button type="button" role="option" data-value="web">Сайты</button><button type="button" role="option" data-value="android-apk">Android</button><button type="button" role="option" data-value="windows-exe">Windows</button></div></div><button class="btn" id="draftExport">Экспорт</button><button class="btn" id="draftImport">Импорт</button></div>
+ <div class="toolbar"><input class="field search" id="searchDrafts" type="search" placeholder="Поиск по названию или заметке…"><div class="custom-select field" data-select="filterTarget" data-value="all" style="max-width:190px"><button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false">Все типы <span>⌄</span></button><div class="select-menu" role="listbox"><button type="button" role="option" data-value="all" aria-selected="true">Все типы</button><button type="button" role="option" data-value="web">Сайты</button><button type="button" role="option" data-value="android-apk">Android</button><button type="button" role="option" data-value="windows-exe">Windows</button></div></div><button class="btn" id="draftExport">Экспорт</button><button class="btn" id="draftImport">Импорт</button></div>
  <div class="drafts" id="draftList"><div class="empty">Пока нет проектов.</div></div>
 </section>
 
@@ -110,8 +110,8 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}.hea
  <div class="section-title"><div><h2>О платформе</h2><p>Фактические возможности текущей версии GPT Build Lab.</p></div></div>
  <article class="card"><h3 style="margin:0;font-size:15px">Что работает сейчас</h3><div class="status-list">
   <div class="status"><i></i><div><strong>Управление проектами</strong><span>Создание, просмотр, поиск, удаление и экспорт карточек проектов в браузере.</span></div></div>
-  <div class="status"><i></i><div><strong>Локальное хранение</strong><span>Черновики сохраняются в localStorage и остаются после перезагрузки этого браузера.</span></div></div>
-  <div class="status"><i></i><div><strong>Импорт и экспорт JSON</strong><span>Резервное копирование и перенос черновиков между браузерами вручную.</span></div></div>
+  <div class="status"><i></i><div><strong>Локальное хранение</strong><span>Проекты сохраняются в localStorage и остаются после перезагрузки этого браузера.</span></div></div>
+  <div class="status"><i></i><div><strong>Импорт и экспорт JSON</strong><span>Резервное копирование и перенос проектов между браузерами вручную.</span></div></div>
   <div class="status"><i></i><div><strong>Автоматическая проверка кода лаборатории</strong><span>GitHub Actions запускает тесты проекта при обновлениях репозитория.</span></div></div>
   <div class="status"><i></i><div><strong>Упаковка статических сайтов</strong><span>Отдельный GitHub Actions workflow может собрать ZIP из открытого репозитория по ручному запуску.</span></div></div>
  </div></article>
@@ -183,7 +183,7 @@ function setSelectValue(el,value){el.dataset.value=value;const option=el.querySe
 document.querySelectorAll(".custom-select").forEach(el=>{const trigger=el.querySelector(".select-trigger");setSelectValue(el,el.dataset.value);trigger.addEventListener("click",()=>{const open=!el.classList.contains("open");document.querySelectorAll(".custom-select.open").forEach(x=>{x.classList.remove("open");x.querySelector(".select-trigger").setAttribute("aria-expanded","false")});el.classList.toggle("open",open);trigger.setAttribute("aria-expanded",String(open))});el.querySelectorAll("[role=option]").forEach(option=>option.addEventListener("click",()=>{setSelectValue(el,option.dataset.value);el.classList.remove("open");trigger.setAttribute("aria-expanded","false");if(el.dataset.select==="filterTarget")renderDrafts()}));});
 document.addEventListener("click",e=>{if(!e.target.closest(".custom-select"))document.querySelectorAll(".custom-select.open").forEach(el=>{el.classList.remove("open");el.querySelector(".select-trigger").setAttribute("aria-expanded","false")})});
 function openModal(){$("projectModal").classList.add("open");$("projectName").focus()}
-function closeModal(){$("projectModal").classList.remove("open");$("projectForm").reset()}
+function closeModal(){$("projectModal").classList.remove("open");$("projectForm").reset();setSelectValue(document.querySelector('[data-select="projectType"]'),"web");setSelectValue(document.querySelector('[data-select="projectProfile"]'),"debug");document.querySelectorAll(".custom-select.open").forEach(el=>{el.classList.remove("open");el.querySelector(".select-trigger").setAttribute("aria-expanded","false")})}
 ["newProjectTop","newProjectHero","newProjectDrafts"].forEach(id=>$(id).addEventListener("click",openModal));
 $("closeModal").addEventListener("click",closeModal);$("cancelModal").addEventListener("click",closeModal);
 $("projectModal").addEventListener("click",e=>{if(e.target===$("projectModal"))closeModal()});
@@ -193,7 +193,7 @@ e.preventDefault();if(!$("projectForm").reportValidity())return;
 const source=$("projectSource").value.trim();
 if(source&&!/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(source)){notify("Укажи ссылку GitHub в формате owner/repository.");return}
 projects.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),project:$("projectName").value.trim(),target:getSelectValue("projectType"),profile:getSelectValue("projectProfile"),source,notes:$("projectNotes").value.trim(),status:"draft",createdAt:new Date().toISOString()});
-projects=projects.slice(0,100);if(save()){closeModal();render();goto("drafts");notify("Проект добавлен в черновики.")}
+projects=projects.slice(0,100);if(save()){closeModal();render();goto("drafts");notify("Проект добавлен в проекты.")}
 });
 $("draftList").addEventListener("click",e=>{
 const ex=e.target.closest("[data-export]"),del=e.target.closest("[data-delete]");
