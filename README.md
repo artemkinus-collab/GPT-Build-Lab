@@ -7,7 +7,7 @@ A small, transparent starting point for a cloud build workspace.
 ## What is included
 
 - **Web dashboard** in `web/index.html` — responsive, dependency-free interface.
-- **Draft job manager** — create build-job drafts, persist them in the current browser using localStorage, and export a JSON job description.
+- **Draft job manager** — create build-job drafts, persist them in the current browser using localStorage, export JSON, and safely import validated JSON backups.
 - **Regression tests** in `tests/test_dashboard.py` — checks dashboard metadata, required controls, target configuration, honest capability labels, and security warnings.
 - **Validation workflow** — GitHub Actions runs the regression tests and project validator on pushes and pull requests.
 - **GitHub Pages workflow** — deploys the contents of `web/` when Pages is configured to use GitHub Actions.
