@@ -17,6 +17,10 @@ on:
         required: true
         default: .
         type: string
+      build_id:
+        description: Internal Build Lab build UUID (leave empty for manual runs)
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -68,6 +72,26 @@ jobs:
               raise SystemExit("Project path must be a safe relative directory.")
           PY
 
+      - name: Mark build as running
+        if: ${{ inputs.build_id != '' }}
+        env:
+          BUILD_ID: ${{ inputs.build_id }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+          base = os.environ.get("SUPABASE_URL", "").rstrip("/")
+          key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+          if not base or not key:
+              raise SystemExit("Supabase callback secrets are not configured.")
+          body = json.dumps({"status":"running","started_at":datetime.now(timezone.utc).isoformat(),"github_run_id":int(os.environ["GITHUB_RUN_ID"])}).encode()
+          req = urllib.request.Request(base+"/rest/v1/builds?id=eq."+os.environ["BUILD_ID"], data=body, method="PATCH", headers={"apikey":key,"Authorization":"Bearer "+key,"Content-Type":"application/json","Prefer":"return=minimal"})
+          urllib.request.urlopen(req, timeout=15).read()
+          PY
+
       - name: Package static website
         env:
           PROJECT_PATH: ${{ inputs.project_path }}
@@ -84,6 +108,44 @@ jobs:
           path: build-output/web-project.zip
           if-no-files-found: error
           retention-days: 7
+
+      - name: Mark build as succeeded
+        if: ${{ success() && inputs.build_id != '' }}
+        env:
+          BUILD_ID: ${{ inputs.build_id }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ARTIFACT_NAME: gpt-build-lab-web-${{ github.run_number }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timedelta, timezone
+          base=os.environ.get("SUPABASE_URL","").rstrip("/")
+          key=os.environ.get("SUPABASE_SERVICE_ROLE_KEY","")
+          if not base or not key: raise SystemExit("Supabase callback secrets are not configured.")
+          now=datetime.now(timezone.utc)
+          body=json.dumps({"status":"succeeded","artifact_name":os.environ["ARTIFACT_NAME"],"artifact_expires_at":(now+timedelta(days=7)).isoformat(),"completed_at":now.isoformat()}).encode()
+          req=urllib.request.Request(base+"/rest/v1/builds?id=eq."+os.environ["BUILD_ID"],data=body,method="PATCH",headers={"apikey":key,"Authorization":"Bearer "+key,"Content-Type":"application/json","Prefer":"return=minimal"})
+          urllib.request.urlopen(req,timeout=15).read()
+          PY
+
+      - name: Mark build as failed
+        if: ${{ failure() && inputs.build_id != '' }}
+        env:
+          BUILD_ID: ${{ inputs.build_id }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+          base=os.environ.get("SUPABASE_URL","").rstrip("/")
+          key=os.environ.get("SUPABASE_SERVICE_ROLE_KEY","")
+          if not base or not key: raise SystemExit("Supabase callback secrets are not configured.")
+          body=json.dumps({"status":"failed","error_message":"GitHub Actions job failed. Open the run logs for details.","completed_at":datetime.now(timezone.utc).isoformat()}).encode()
+          req=urllib.request.Request(base+"/rest/v1/builds?id=eq."+os.environ["BUILD_ID"],data=body,method="PATCH",headers={"apikey":key,"Authorization":"Bearer "+key,"Content-Type":"application/json","Prefer":"return=minimal"})
+          urllib.request.urlopen(req,timeout=15).read()
+          PY
 
       - name: Write build summary
         env:
