@@ -34,11 +34,11 @@ Never put service-role keys or GitHub tokens in web/index.html, committed config
 - The first pipeline packages static websites only; it does not execute submitted scripts or install dependencies.
 - Only public GitHub source repositories are supported initially.
 - Successful ZIPs are Actions artifacts; direct authenticated download from the dashboard is a follow-up.
-- Register the Supabase OAuth callback URL in the GitHub OAuth App and configure Supabase allowed redirect URLs.
-- Configure rate limits and email confirmation before public registration.
+- Configure Supabase Auth rate limits and CAPTCHA/bot protection before opening registration widely. Keep Email confirmation disabled for this synthetic-email username-only flow.
+- GitHub OAuth is deferred; no OAuth callback is needed for this release.
 
 ## Next steps
-1. Deploy schema and Edge Function; configure secrets and OAuth.
+1. Deploy schema and Edge Function; configure server-side secrets for ZIP build dispatch separately from the public account client.
 2. Configure Supabase and complete the account smoke test described in docs/ACCOUNT_SETUP.md.
 3. Add per-user project CRUD and build history.
 4. Add authenticated build creation and status refresh.
