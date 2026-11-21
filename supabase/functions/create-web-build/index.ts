@@ -31,7 +31,14 @@ Deno.serve(async (req) => {
  if (!projectPath || projectPath.length > 240 || projectPath.startsWith("/") || projectPath.includes("\\") || projectPath.split("/").includes("..")) return reply({ error: "Project path must be a safe relative path." }, 400);
  if (!projectName) return reply({ error: "Project name is required." }, 400);
  const admin = createClient(url, service, { auth: { persistSession: false } });
- const { data: build, error: insertError } = await admin.from("builds").insert({ user_id: authData.user.id, target: "web", status: "queued" }).select("id").single();
+ const { data: project, error: projectError } = await admin.from("projects").insert({
+  user_id: authData.user.id, name: projectName, target: "web",
+  source_repository: sourceRepository, source_ref: sourceRef, project_path: projectPath,
+ }).select("id").single();
+ if (projectError || !project) return reply({ error: "Could not save project." }, 500);
+ const { data: build, error: insertError } = await admin.from("builds").insert({
+  user_id: authData.user.id, project_id: project.id, target: "web", status: "queued",
+ }).select("id").single();
  if (insertError || !build) return reply({ error: "Could not create build record." }, 500);
  const dispatch = await fetch(`https://api.github.com/repos/${workflowRepo}/actions/workflows/build-web.yml/dispatches`, {
   method: "POST",
