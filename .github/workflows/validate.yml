@@ -26,5 +26,8 @@ jobs:
       - name: Run regression tests
         run: python -m unittest discover -s tests -v
 
+      - name: Check inline JavaScript syntax
+        run: python scripts/check_inline_js.py
+
       - name: Validate dashboard and configuration
         run: python scripts/validate.py
