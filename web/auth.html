@@ -59,7 +59,7 @@ button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradien
   if(!client){setStatus("Сервер аккаунтов не настроен. Следуй инструкции по подключению Supabase.");return}
   busy=true;$("submit").disabled=true;setStatus(mode==="register"?"Создаём аккаунт…":"Проверяем данные…");
   try{
-   const internalEmail=username+"@accounts.gptbuildlab.invalid";
+   const internalEmail=username+"@gptbuildlab.example.com";
    if(mode==="register"){
     const {data,error}=await client.auth.signUp({email:internalEmail,password,options:{data:{username}}});
     if(error)throw error;
