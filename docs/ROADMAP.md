@@ -8,8 +8,12 @@ This roadmap distinguishes shipped foundation from future work. A planned item i
 - [x] Add a dependency-free browser dashboard.
 - [x] Save build-job drafts in browser localStorage.
 - [x] Export one draft or all drafts as JSON.
+- [x] Import JSON backups with size, schema, target, and URL validation.
 - [x] Add a lightweight validation script.
+- [x] Add six regression tests for the dashboard and build matrix.
+- [x] Check inline JavaScript syntax in CI.
 - [x] Add GitHub Actions validation on push and pull request.
+- [x] Publish the static dashboard through GitHub Pages using separate package and deploy jobs.
 
 ## Phase 2 — Web build pipeline
 
