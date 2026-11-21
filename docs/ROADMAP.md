@@ -1,26 +1,28 @@
 # GPT Build Lab roadmap
 
-This roadmap distinguishes shipped foundation from future work. A planned item is not available until its workflow has been implemented and tested.
+This roadmap separates available features from planned integrations.
 
-## Phase 1 — Foundation (this commit series)
+## Phase 1 — Foundation
 
 - [x] Establish project structure and security rules.
-- [x] Add a dependency-free browser dashboard.
+- [x] Build a responsive browser dashboard.
 - [x] Save build-job drafts in browser localStorage.
-- [x] Export one draft or all drafts as JSON.
-- [x] Import JSON backups with size, schema, target, and URL validation.
-- [x] Add a lightweight validation script.
-- [x] Add six regression tests for the dashboard and build matrix.
+- [x] Export and import JSON backups with validation.
+- [x] Add dashboard and packaging regression tests.
 - [x] Check inline JavaScript syntax in CI.
 - [x] Add GitHub Actions validation on push and pull request.
-- [x] Publish the static dashboard through GitHub Pages using separate package and deploy jobs.
+- [x] Publish the dashboard through GitHub Pages.
 
-## Phase 2 — Web build pipeline
+## Phase 2 — Static Web packaging
 
-- [ ] Define a supported web-project input contract.
-- [ ] Add a manually-triggered workflow with explicit inputs.
-- [ ] Build and upload a web artifact.
-- [ ] Show a link to the workflow run and artifact.
+- [x] Define supported input: public GitHub repository, ref, and optional project folder.
+- [x] Add a manually-triggered workflow with explicit inputs.
+- [x] Require root-level index.html.
+- [x] Reject symlinks and secret-like files.
+- [x] Apply file-count and uncompressed-size limits.
+- [x] Package static assets into a ZIP artifact.
+- [x] Upload the artifact with a 7-day retention period.
+- [ ] Verify a real test repository end-to-end and record the run result.
 
 ## Phase 3 — Android APK pipeline
 
@@ -44,10 +46,11 @@ This roadmap distinguishes shipped foundation from future work. A planned item i
 - [ ] Add opt-in deployment targets and approval gates.
 - [ ] Document artifact retention and runner quotas.
 
-## Design constraints
+## Design and security constraints
 
-- Never accept arbitrary shell commands from an unauthenticated web page.
-- Do not expose GitHub tokens in client-side JavaScript.
+- Never accept arbitrary shell commands from the public dashboard.
+- Never expose GitHub tokens in client-side JavaScript.
+- Do not execute untrusted project scripts in the static packaging workflow.
 - Keep privileged workflows separate from pull-request validation.
 - Require explicit confirmation for release signing and deployment.
 - Prefer least-privilege workflow permissions.
