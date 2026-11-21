@@ -60,4 +60,4 @@ create policy "Users can update their own profile"
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
-grant select, update on public.profiles to authenticated;
+grant select, update (avatar) on public.profiles to authenticated;
