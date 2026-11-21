@@ -2,7 +2,7 @@
 
 A public cloud build workspace. The dashboard is published with GitHub Pages; controlled build jobs run separately in GitHub Actions.
 
-> **Current stage:** Static Web ZIP packaging is available through GitHub Actions. Account/database integration scaffolding has been added, but it is not live until a Supabase project and secrets are configured. Android APK and Windows EXE compilation are not implemented yet.
+> **Current stage:** Static Web ZIP packaging is available through GitHub Actions. Username/password account integration is implemented in the frontend and SQL migrations; it becomes active after the owner creates a Supabase project, applies the migrations, and adds the public client configuration. Android APK and Windows EXE compilation are not implemented yet.
 
 ## Open the dashboard
 
@@ -36,9 +36,7 @@ Private source repositories are not supported by this first version. Use only so
 
 ## Account and cloud build foundation
 
-The repository now includes a Supabase schema for user-owned projects/build history and an authenticated Edge Function that queues the Web ZIP workflow. The workflow can report queued build status to Supabase when the required secrets are configured. Setup instructions and security boundaries are documented in [Account and Build Architecture](docs/ACCOUNT_AND_BUILD_ARCHITECTURE.md).
-
-This integration is **not active on the public dashboard yet**: Supabase credentials, OAuth provider setup, and server-side GitHub secrets must be configured first. No credentials belong in the public page.
+The repository includes Supabase Auth integration for username/password accounts, private user profiles with RLS, a schema for user-owned projects/build history, and an authenticated Edge Function for queuing Web ZIP builds. To activate accounts, follow [Account Setup](docs/ACCOUNT_SETUP.md). Build automation still needs its separate server-side secrets; never put service-role keys or GitHub tokens in the public page.
 
 ## Dashboard features
 
@@ -70,6 +68,8 @@ python scripts/validate.py
 ## Project structure
 
 - `web/index.html` — public dashboard.
+- `web/auth.html` — username/password sign-in and registration.
+- `web/supabase-config.js` — public Supabase URL and anon/publishable key placeholders.
 - `scripts/package_web.py` — safe static ZIP packager.
 - `scripts/validate.py` — project sanity checks.
 - `scripts/check_inline_js.py` — inline JavaScript syntax check.
