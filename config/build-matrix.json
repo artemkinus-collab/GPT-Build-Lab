@@ -5,9 +5,9 @@
     {
       "id": "web",
       "label": "Web",
-      "status": "prototype",
-      "runner": null,
-      "notes": "Browser dashboard and repository validation only; no production web build pipeline yet."
+      "status": "available",
+      "runner": "github-actions-ubuntu",
+      "notes": "Manual GitHub Actions workflow validates and packages static web projects into ZIP artifacts. It does not execute project scripts."
     },
     {
       "id": "android-apk",
