@@ -1,215 +1,217 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f3ff">
-  <meta name="description" content="GPT Build Lab — облачная лаборатория для подготовки, проверки и упаковки проектов.">
-  <title>GPT Build Lab — облачная лаборатория</title>
-  <style>
-    :root{color-scheme:light;--ink:#252442;--muted:#77768f;--line:#e8e5f2;--purple:#7566df;--purple2:#a99bf8;--mint:#dff8ed;--sky:#e4f5ff;--peach:#fff0e5;--paper:#fff;--bg:#f7f6fc;--shadow:0 18px 50px rgba(64,54,120,.09)}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 8% 2%,#e8e3ff 0,transparent 34%),radial-gradient(ellipse at 92% 12%,#dff5ff 0,transparent 29%),linear-gradient(180deg,#f9f8ff 0%,#f6f8fc 54%,#fbf7f4 100%)}
-    a{color:inherit}.shell{max-width:1220px;margin:auto;padding:24px 22px 54px}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:27px}
-    .brand{display:flex;align-items:center;gap:12px}.brandmark{width:48px;height:48px;border-radius:17px;background:linear-gradient(145deg,#8b7cf0,#68c9d7);display:grid;place-items:center;box-shadow:0 9px 22px #8173d94a;color:white}
-    .brandmark svg{width:26px;height:26px}.brand h1{font-size:19px;letter-spacing:-.4px;margin:0}.brand small{display:block;color:var(--muted);font-size:11px}
-    .top-actions{display:flex;align-items:center;gap:10px}.live{display:inline-flex;align-items:center;gap:8px;background:#e7f8ef;color:#277b57;border:1px solid #c8efda;padding:8px 12px;border-radius:99px;font-size:12px;font-weight:700}.dot{width:7px;height:7px;background:#40bd83;border-radius:50%;box-shadow:0 0 0 4px #40bd831b}
-    .linkbtn,.primary,.secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font:inherit;font-size:13px;font-weight:750;cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s}
-    .linkbtn:hover,.primary:hover,.secondary:hover{transform:translateY(-1px)}.linkbtn{background:#fff;border:1px solid var(--line);box-shadow:0 5px 14px #423b7510}.linkbtn svg,.primary svg,.secondary svg{width:16px;height:16px}
-    .hero{position:relative;overflow:hidden;padding:clamp(25px,5vw,48px);border-radius:30px;background:linear-gradient(112deg,#6f61d6 0%,#8b7ce8 46%,#6dbdce 100%);color:#fff;box-shadow:0 22px 60px #786bd53b;margin-bottom:21px}
-    .hero:before,.hero:after{content:"";position:absolute;border:1px solid #ffffff30;border-radius:50%;pointer-events:none}.hero:before{width:340px;height:340px;right:-70px;top:-180px}.hero:after{width:230px;height:230px;right:100px;bottom:-180px}
-    .hero-inner{position:relative;z-index:1;max-width:760px}.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:#e4e0ff}.hero h2{font-size:clamp(29px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:12px 0 14px;max-width:680px}.hero p{max-width:660px;color:#f0edff;margin:0;font-size:15px}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.primary{background:#fff;color:#5146b1;box-shadow:0 8px 20px #39307830}.secondary{background:#ffffff20;color:#fff;border:1px solid #ffffff58}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:20px}.stat{background:#ffffffc9;backdrop-filter:blur(12px);border:1px solid #fff;border-radius:18px;padding:15px 17px;box-shadow:0 8px 26px #50448b0a}.stat strong{display:block;font-size:20px;letter-spacing:-.6px}.stat span{color:var(--muted);font-size:11px}
-    .layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.85fr);gap:17px;align-items:start}.stack{display:grid;gap:17px;min-width:0}
-    .card{background:#ffffffdf;border:1px solid #fff;border-radius:22px;padding:21px;box-shadow:var(--shadow);min-width:0}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:7px}.card h3{font-size:17px;letter-spacing:-.3px;margin:0}.muted{color:var(--muted)}.small{font-size:12px}.caption{color:var(--muted);font-size:12px;margin:4px 0 0}
-    .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:99px;background:#eeeaff;color:#6457c6;font-size:10px;font-weight:800;white-space:nowrap}.badge.green{background:#e4f8ed;color:#287c58}.badge.amber{background:#fff2df;color:#a16b22}
-    .targets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:17px}.target{padding:14px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(145deg,#fff,#f9f8ff)}.target-icon{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;margin-bottom:10px}.target-icon svg{width:19px;height:19px}.lav{background:#eeeaff;color:#7061d6}.blu{background:#e6f5ff;color:#428cb9}.grn{background:#e4f8ed;color:#35966b}.target strong{display:block;font-size:13px}.target p{font-size:11px;color:var(--muted);margin:3px 0 9px}
-    form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}label{display:grid;gap:6px;color:#565570;font-size:11px;font-weight:700}input,select{width:100%;min-width:0;background:#fbfaff;border:1px solid #e4e0f0;border-radius:11px;padding:11px 12px;color:var(--ink);font:inherit;font-size:13px;outline:none}input:focus,select:focus{border-color:#9b8df0;box-shadow:0 0 0 3px #9384e91b}.wide{grid-column:1/-1}.form-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:2px}.primary{background:linear-gradient(120deg,#7869e0,#8e80e9);color:#fff;box-shadow:0 7px 18px #7668d936}.secondary.dark{background:#f0eff9;color:#5e58a0;border:1px solid #e4e1f1}
-    .hint{margin-top:13px;padding:12px 13px;background:#fff8eb;border:1px solid #f7e8c9;border-radius:13px;color:#866a3b;font-size:11px}
-    .steps{display:grid;gap:13px;margin-top:17px}.step{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}.stepnum{width:27px;height:27px;border-radius:9px;background:#eeeaff;color:#6b5ed0;display:grid;place-items:center;font-size:11px;font-weight:800}.step strong{display:block;font-size:12px}.step span{display:block;color:var(--muted);font-size:11px;margin-top:2px}
-    .jobs{display:grid;gap:9px;margin-top:15px}.empty{padding:19px;border:1px dashed #dcd7ec;border-radius:14px;color:var(--muted);text-align:center;font-size:12px}.job{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:#faf9ff;border:1px solid #ece9f5;border-radius:13px}.job strong{display:block;font-size:12px}.job span{display:block;color:var(--muted);font-size:10px}.job-actions{display:flex;gap:6px;flex-wrap:wrap}.job-actions button{padding:6px 9px;font-size:10px}
-    .feature-list{list-style:none;padding:0;margin:15px 0 0;display:grid;gap:10px}.feature-list li{display:flex;gap:9px;align-items:flex-start;font-size:12px;color:#55536e}.check{color:#36a977;font-weight:900}
-    footer{padding:24px 6px 0;text-align:center;color:#9290a7;font-size:11px}
-    @media(max-width:850px){.layout{grid-template-columns:1fr}.topbar{align-items:flex-start}.stats{gap:8px}.stat{padding:12px}}
-    @media(max-width:600px){.shell{padding:16px 13px 35px}.topbar{flex-wrap:wrap}.top-actions{width:100%;justify-content:space-between}.hero{border-radius:23px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.targets{grid-template-columns:1fr}form{grid-template-columns:1fr}.wide{grid-column:auto}.card{padding:17px}.hero h2{letter-spacing:-.8px}}
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f3ff">
+<meta name="description" content="GPT Build Lab — панель управления проектами.">
+<title>GPT Build Lab</title>
+<style>
+:root{color-scheme:light;--bg:#f6f5fb;--panel:#fff;--panel2:#fbfaff;--ink:#262442;--muted:#85839b;--line:#e9e6f2;--accent:#7668df;--accent2:#988bf0;--soft:#efedff;--green:#29996c;--red:#d85e6a;--shadow:0 12px 38px #443b7610}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 5% 0,#e8e4ff 0,transparent 30%),radial-gradient(ellipse at 95% 8%,#e0f4ff 0,transparent 27%),var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;transition:background .2s,color .2s}
+body.dark{color-scheme:dark;--bg:#171624;--panel:#242235;--panel2:#2b293e;--ink:#f0effb;--muted:#aaa7c0;--line:#3c3954;--soft:#383451;--shadow:0 12px 38px #0003;background:radial-gradient(ellipse at 5% 0,#302b55 0,transparent 32%),radial-gradient(ellipse at 95% 8%,#203c4c 0,transparent 27%),var(--bg)}
+button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.shell{max-width:1200px;margin:auto;padding:22px 24px 50px}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:15px;background:linear-gradient(145deg,#8878ef,#65c6d7);display:grid;place-items:center;color:#fff;box-shadow:0 8px 20px #7668df40}.logo svg{width:25px}.brand h1{font-size:18px;margin:0;letter-spacing:-.4px}.brand small{font-size:11px;color:var(--muted)}.header-actions{display:flex;align-items:center;gap:9px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--panel);color:var(--ink);font-size:12px;font-weight:750;transition:.18s}.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}.btn.primary{background:linear-gradient(120deg,#7668df,#9385ee);border-color:transparent;color:white;box-shadow:0 7px 18px #7668df38}.btn.ghost{background:var(--soft);border-color:transparent;color:var(--accent)}.btn.danger{color:var(--red)}.btn.small{padding:7px 10px;font-size:11px}
+nav{display:flex;gap:5px;align-items:center;padding:6px;background:#ffffffa8;border:1px solid #fff;border-radius:16px;box-shadow:0 6px 22px #453d7310;overflow-x:auto;margin-bottom:22px;backdrop-filter:blur(14px)}body.dark nav{background:#242235c9;border-color:var(--line)}
+.navbtn{white-space:nowrap;border:0;background:transparent;color:var(--muted);border-radius:11px;padding:10px 14px;font-size:12px;font-weight:750}.navbtn.active{background:var(--soft);color:var(--accent)}
+.page{display:none;animation:appear .2s ease}.page.active{display:block}@keyframes appear{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{position:relative;overflow:hidden;padding:clamp(25px,5vw,42px);border-radius:26px;color:white;background:linear-gradient(112deg,#6f61d6,#8b7ce8 50%,#6dbdce);box-shadow:0 20px 55px #786bd533;margin-bottom:18px}.hero:after{content:"";position:absolute;width:330px;height:330px;border:1px solid #ffffff30;border-radius:50%;right:-65px;top:-185px;box-shadow:0 0 0 42px #ffffff0a,0 0 0 85px #ffffff08}.hero-content{position:relative;z-index:1;max-width:690px}.eyebrow{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:#e8e4ff}.hero h2{font-size:clamp(28px,4.7vw,42px);line-height:1.08;letter-spacing:-1.2px;margin:12px 0}.hero p{margin:0;color:#f1eeff;max-width:580px}.hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.hero .btn:not(.primary){background:#ffffff20;color:white;border-color:#ffffff55}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.metric,.card{background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:var(--shadow)}.metric strong{display:block;font-size:25px;letter-spacing:-.7px}.metric span{color:var(--muted);font-size:11px}.metric .metric-icon{float:right;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--soft);color:var(--accent);font-weight:900}
+.section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:0 0 14px}.section-title h2{font-size:20px;letter-spacing:-.5px;margin:0}.section-title p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.home-lower{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-top:14px}.quick-list{display:grid;gap:9px}.quick{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:13px;background:var(--panel2);border:1px solid var(--line)}.quick strong{font-size:12px}.quick span{font-size:11px;color:var(--muted)}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.search{flex:1;min-width:180px}.field,input,select{width:100%;border:1px solid var(--line);border-radius:11px;padding:11px 12px;background:var(--panel2);color:var(--ink);outline:none;font-size:12px}.field:focus,input:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px #9284ed22}
+.drafts{display:grid;gap:10px}.draft{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:15px}.draft-main{min-width:0}.draft strong{display:block;font-size:13px;overflow-wrap:anywhere}.draft small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.draft-actions{display:flex;gap:6px;flex-wrap:wrap}.empty{padding:35px 18px;border:1px dashed var(--line);border-radius:16px;text-align:center;color:var(--muted);font-size:12px;background:var(--panel)}
+.stat-bars{display:grid;gap:15px}.bar-row{display:grid;grid-template-columns:140px 1fr 35px;gap:10px;align-items:center;font-size:12px}.bar-track{height:9px;background:var(--soft);border-radius:99px;overflow:hidden}.bar-fill{height:100%;width:0;background:linear-gradient(90deg,#7668df,#68c7d5);border-radius:99px;transition:width .25s}
+.settings-list{display:grid;gap:0}.setting{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}.setting:last-child{border-bottom:0}.setting strong{display:block;font-size:13px}.setting small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.switch{appearance:none;width:42px;height:24px;border-radius:99px;background:#c9c6d8;position:relative;cursor:pointer;flex:none;transition:.2s}.switch:checked{background:var(--accent)}.switch:after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:white;transition:.2s}.switch:checked:after{transform:translateX(18px)}
+.link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.link-card{display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--line);border-radius:15px;background:var(--panel);transition:.18s}.link-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.link-icon{width:40px;height:40px;border-radius:13px;background:var(--soft);color:var(--accent);display:grid;place-items:center;font-weight:900;font-size:17px}.link-card strong{display:block;font-size:12px}.link-card small{color:var(--muted);font-size:10px}
+.status-list{display:grid;gap:10px;margin-top:12px}.status{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:13px;background:var(--panel2);border:1px solid var(--line)}.status i{width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:5px;flex:none}.status i.planned{background:#d49a46}.status strong{display:block;font-size:12px}.status span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.modal-backdrop{display:none;position:fixed;inset:0;background:#17142d88;backdrop-filter:blur(7px);z-index:10;align-items:center;justify-content:center;padding:18px}.modal-backdrop.open{display:flex}.modal{width:min(520px,100%);max-height:min(90vh,760px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 25px 90px #0004;animation:appear .18s ease}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:17px}.modal-head h2{font-size:18px;margin:0}.close{border:0;background:var(--soft);color:var(--ink);border-radius:10px;width:34px;height:34px;font-size:20px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid label{display:grid;gap:6px;font-size:11px;color:var(--muted);font-weight:700}.form-grid .full{grid-column:1/-1}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:20;background:#28263f;color:#fff;padding:11px 16px;border-radius:12px;font-size:12px;box-shadow:0 8px 30px #0003;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
+@media(max-width:760px){.home-lower{grid-template-columns:1fr}.grid{gap:9px}.metric{padding:14px}.shell{padding:16px 13px 35px}}
+@media(max-width:520px){header{gap:8px}.brand small{display:none}.brand h1{font-size:16px}.logo{width:39px;height:39px}.header-actions .btn{padding:9px 11px}.grid{grid-template-columns:1fr 1fr}.metric:last-child{grid-column:1/-1}.link-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.draft{align-items:flex-start;flex-direction:column}.draft-actions{width:100%}.bar-row{grid-template-columns:105px 1fr 25px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-<main class="shell">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brandmark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.8 14.6 9.4 21.2 12l-6.6 2.6L12 21.2l-2.6-6.6L2.8 12l6.6-2.6L12 2.8Z"/><path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8L19 2Z"/></svg></div>
-      <div><h1>GPT Build Lab</h1><small>Облачная лаборатория проектов</small></div>
-    </div>
-    <div class="top-actions"><span class="live"><i class="dot"></i> Сайт доступен</span><a class="linkbtn" href="https://github.com/artemkinus-collab/GPT-Build-Lab" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
-  </header>
+<div class="shell">
+<header>
+ <div class="brand"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.8 14.6 9.4 21.2 12l-6.6 2.6L12 21.2l-2.6-6.6L2.8 12l6.6-2.6L12 2.8Z"/><path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8L19 2Z"/></svg></div><div><h1>GPT Build Lab</h1><small>Лаборатория проектов</small></div></div>
+ <div class="header-actions"><a class="btn" href="https://github.com/artemkinus-collab/GPT-Build-Lab" target="_blank" rel="noopener">GitHub ↗</a><button class="btn primary" id="newProjectTop">＋ Новый проект</button></div>
+</header>
+<nav aria-label="Основная навигация">
+ <button class="navbtn active" data-page="home">Главная</button>
+ <button class="navbtn" data-page="statistics">Статистика</button>
+ <button class="navbtn" data-page="settings">Настройки</button>
+ <button class="navbtn" data-page="github">GitHub</button>
+ <button class="navbtn" data-page="drafts">Черновики <span id="navDraftCount"></span></button>
+ <button class="navbtn" data-page="about">О платформе</button>
+</nav>
 
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="eyebrow">Создавай · Проверяй · Запускай</div>
-      <h2>Твои проекты заслуживают красивой сборочной лаборатории.</h2>
-      <p>Подготовь проект, запусти безопасную упаковку в облаке и получи готовый архив. GPT Build Lab постепенно превращается из панели планирования в полноценную облачную платформу сборки.</p>
-      <div class="hero-actions">
-        <a class="primary" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions/workflows/build-web.yml" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v18l15-9L5 3Z"/></svg> Открыть сборку сайта</a>
-        <a class="secondary" href="#drafts">Мои проекты ↓</a>
-      </div>
-    </div>
-  </section>
+<section class="page active" id="page-home">
+ <div class="hero"><div class="hero-content"><div class="eyebrow">Рабочее пространство разработчика</div><h2>Все твои проекты — в одном месте.</h2><p>Создавай карточки проектов, следи за их состоянием и управляй локальными данными. Без декоративных функций и обещаний того, чего пока нет.</p><div class="hero-actions"><button class="btn primary" id="newProjectHero">＋ Создать проект</button><button class="btn" data-goto="drafts">Открыть черновики →</button></div></div></div>
+ <div class="grid">
+  <div class="metric"><span class="metric-icon">▦</span><strong id="homeTotal">0</strong><span>Всего проектов</span></div>
+  <div class="metric"><span class="metric-icon">⌁</span><strong id="homeWeb">0</strong><span>Веб-проекты</span></div>
+  <div class="metric"><span class="metric-icon">◷</span><strong id="homeRecent">0</strong><span>Добавлено за 7 дней</span></div>
+ </div>
+ <div class="home-lower">
+  <article class="card"><div class="section-title"><div><h2>Последние проекты</h2><p>Недавно добавленные в рабочее пространство</p></div><button class="btn small ghost" data-goto="drafts">Все проекты →</button></div><div class="quick-list" id="recentProjects"><div class="empty">Пока нет проектов. Создай первый.</div></div></article>
+  <article class="card"><div class="section-title"><div><h2>Быстрый доступ</h2><p>Основные разделы лаборатории</p></div></div><div class="quick-list"><button class="quick" data-goto="statistics"><strong>Статистика</strong><span>Обзор проектов →</span></button><button class="quick" data-goto="github"><strong>GitHub</strong><span>Репозиторий и Actions →</span></button><button class="quick" data-goto="about"><strong>О платформе</strong><span>Возможности и ограничения →</span></button></div></article>
+ </div>
+</section>
 
-  <section class="stats" aria-label="Состояние лаборатории">
-    <div class="stat"><strong>01</strong><span>Облачная сборка сайтов</span></div>
-    <div class="stat"><strong id="jobCount">0</strong><span>Черновиков в этом браузере</span></div>
-    <div class="stat"><strong>7 дней</strong><span>Хранение архивов сборки</span></div>
-  </section>
+<section class="page" id="page-statistics">
+ <div class="section-title"><div><h2>Статистика</h2><p>Показатели рассчитываются из твоих сохранённых проектов в этом браузере.</p></div></div>
+ <div class="grid">
+  <div class="metric"><span class="metric-icon">▦</span><strong id="statTotal">0</strong><span>Всего проектов</span></div>
+  <div class="metric"><span class="metric-icon">⌘</span><strong id="statWeb">0</strong><span>Веб-проекты</span></div>
+  <div class="metric"><span class="metric-icon">◈</span><strong id="statAndroid">0</strong><span>Android-проекты</span></div>
+  <div class="metric"><span class="metric-icon">▣</span><strong id="statWindows">0</strong><span>Проекты Windows</span></div>
+  <div class="metric"><span class="metric-icon">◷</span><strong id="statWeek">0</strong><span>За последние 7 дней</span></div>
+  <div class="metric"><span class="metric-icon">⇩</span><strong id="statStorage">Локально</strong><span>Место хранения</span></div>
+ </div>
+ <article class="card" style="margin-top:14px"><div class="section-title"><div><h2>Распределение проектов</h2><p>Количество по типам</p></div></div><div class="stat-bars" id="statBars"></div></article>
+</section>
 
-  <section class="layout">
-    <div class="stack">
-      <article class="card">
-        <div class="card-head"><div><h3>Выбери направление</h3><p class="caption">Возможности платформы и статус каждого направления</p></div><span class="badge green">Обновлено · 0.3</span></div>
-        <div class="targets">
-          <div class="target"><div class="target-icon lav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3M8 9l-2 3 2 3m8-6 2 3-2 3"/></svg></div><strong>Сайты</strong><p>Проверка и упаковка веб-сайтов</p><span class="badge green">Работает</span></div>
-          <div class="target"><div class="target-icon blu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4"/></svg></div><strong>Приложения Android</strong><p>Создание установочных файлов для Android</p><span class="badge amber">В плане</span></div>
-          <div class="target"><div class="target-icon grn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div><strong>Программы Windows</strong><p>Создание программ для Windows</p><span class="badge amber">В плане</span></div>
-        </div>
-      </article>
+<section class="page" id="page-settings">
+ <div class="section-title"><div><h2>Настройки</h2><p>Параметры интерфейса и локальных данных</p></div></div>
+ <article class="card"><div class="settings-list">
+  <div class="setting"><div><strong>Тёмная тема</strong><small>Переключить оформление сайта</small></div><input class="switch" type="checkbox" id="darkMode" aria-label="Тёмная тема"></div>
+  <div class="setting"><div><strong>Подтверждать удаление</strong><small>Спрашивать перед удалением проекта</small></div><input class="switch" type="checkbox" id="confirmDelete" checked aria-label="Подтверждать удаление"></div>
+  <div class="setting"><div><strong>Экспортировать данные</strong><small>Скачать резервную копию всех черновиков в JSON</small></div><button class="btn small" id="settingsExport">Экспортировать</button></div>
+  <div class="setting"><div><strong>Импортировать данные</strong><small>Добавить проекты из ранее сохранённой копии</small></div><button class="btn small" id="settingsImport">Импортировать</button></div>
+  <div class="setting"><div><strong>Очистить рабочее пространство</strong><small>Удалить все локально сохранённые проекты</small></div><button class="btn small danger" id="clearAll">Очистить</button></div>
+ </div></article>
+ <p class="caption" style="margin-top:12px">Данные хранятся в локальном хранилище браузера и не синхронизируются с GitHub.</p>
+</section>
 
-      <article class="card">
-        <div class="card-head"><div><h3>Собрать сайт в облаке</h3><p class="caption">Открытый проект на GitHub → проверка → архив</p></div><span class="badge green">Модуль сборки · версия 0.1</span></div>
-        <div class="steps">
-          <div class="step"><div class="stepnum">1</div><div><strong>Открой сценарий сборки сайта в GitHub</strong><span>Нажми кнопку «Открыть сборку сайта» выше, затем выбери «Запустить сценарий».</span></div></div>
-          <div class="step"><div class="stepnum">2</div><div><strong>Укажи адрес проекта и ветку</strong><span>Например, octocat/hello-world и main. Проект должен быть открытым.</span></div></div>
-          <div class="step"><div class="stepnum">3</div><div><strong>Скачай готовый архив</strong><span>После успешной проверки скачай архив в разделе «Артефакты» запуска. Он хранится 7 дней.</span></div></div>
-        </div>
-        <div class="hint">Сборщик пока упаковывает только статические сайты, в которых файл index.html находится в корне выбранной папки. Он не запускает установщики пакетов, командные сценарии или другие команды из стороннего проекта.</div>
-      </article>
+<section class="page" id="page-github">
+ <div class="section-title"><div><h2>GitHub</h2><p>Подключённые ссылки проекта. Операции открываются на GitHub.</p></div></div>
+ <div class="link-grid">
+  <a class="link-card" href="https://github.com/artemkinus-collab/GPT-Build-Lab" target="_blank" rel="noopener"><span class="link-icon">⌘</span><span><strong>Репозиторий проекта</strong><small>Исходный код и файлы лаборатории ↗</small></span></a>
+  <a class="link-card" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions" target="_blank" rel="noopener"><span class="link-icon">▶</span><span><strong>GitHub Actions</strong><small>Результаты автоматических проверок ↗</small></span></a>
+  <a class="link-card" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions/workflows/build-web.yml" target="_blank" rel="noopener"><span class="link-icon">⇧</span><span><strong>Сценарий упаковки сайта</strong><small>Ручной запуск облачного ZIP-процесса ↗</small></span></a>
+  <a class="link-card" href="https://github.com/artemkinus-collab/GPT-Build-Lab/blob/main/docs/ROADMAP.md" target="_blank" rel="noopener"><span class="link-icon">☷</span><span><strong>План развития</strong><small>Текущие задачи и будущие функции ↗</small></span></a>
+ </div>
+ <article class="card" style="margin-top:14px"><h2 style="font-size:16px;margin:0">Связь с GitHub</h2><p class="caption">Сайт пока не имеет собственного авторизованного подключения к GitHub API. Поэтому кнопки выше открывают соответствующие страницы GitHub, а не имитируют запуск сборки внутри сайта.</p></article>
+</section>
 
-      <article class="card">
-        <div class="card-head"><div><h3>Создать черновик проекта</h3><p class="caption">Локальная заметка — она не запускает сборку и не отправляется на сервер.</p></div></div>
-        <form id="jobForm">
-          <label>Название проекта<input id="project" maxlength="60" placeholder="Мой сайт" required></label>
-          <label>Тип проекта<select id="target"><option value="web">Web</option><option value="android-apk">Android APK</option><option value="windows-exe">Windows EXE</option></select></label>
-          <label class="wide">GitHub-репозиторий<input id="source" type="url" placeholder="https://github.com/owner/repository"></label>
-          <label>Режим сборки<select id="profile"><option value="debug">Проверочный</option><option value="release">Для выпуска (планируется)</option></select></label>
-          <label>Заметка<input id="notes" maxlength="160" placeholder="Что нужно проверить?"></label>
-          <div class="wide form-actions"><button class="primary" type="submit">＋ Сохранить черновик</button><button class="secondary dark" type="button" id="exportAll">Выгрузить данные</button><button class="secondary dark" type="button" id="importDrafts">Загрузить данные</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
-        </form>
-        <div class="hint">Не добавляй сюда пароли, ключи доступа, закрытые ключи и ключи подписи Android. Открытый сайт и его код доступны всем посетителям.</div>
-      </article>
+<section class="page" id="page-drafts">
+ <div class="section-title"><div><h2>Черновики проектов</h2><p>Локальная библиотека проектов этого браузера.</p></div><button class="btn primary" id="newProjectDrafts">＋ Новый проект</button></div>
+ <div class="toolbar"><input class="field search" id="searchDrafts" type="search" placeholder="Поиск по названию или заметке…"><select class="field" id="filterTarget" style="max-width:190px"><option value="all">Все типы</option><option value="web">Сайты</option><option value="android-apk">Android</option><option value="windows-exe">Windows</option></select><button class="btn" id="draftExport">Экспорт</button><button class="btn" id="draftImport">Импорт</button></div>
+ <div class="drafts" id="draftList"><div class="empty">Пока нет проектов.</div></div>
+</section>
 
-      <article class="card" id="drafts">
-        <div class="card-head"><div><h3>Мои черновики</h3><p class="caption">Хранятся только в этом браузере</p></div><span class="badge" id="draftBadge">0 записей</span></div>
-        <div id="jobs" class="jobs"><div class="empty">Пока пусто. Создай первый черновик выше.</div></div>
-      </article>
-    </div>
+<section class="page" id="page-about">
+ <div class="section-title"><div><h2>О платформе</h2><p>Фактические возможности текущей версии GPT Build Lab.</p></div></div>
+ <article class="card"><h3 style="margin:0;font-size:15px">Что работает сейчас</h3><div class="status-list">
+  <div class="status"><i></i><div><strong>Управление проектами</strong><span>Создание, просмотр, поиск, удаление и экспорт карточек проектов в браузере.</span></div></div>
+  <div class="status"><i></i><div><strong>Локальное хранение</strong><span>Черновики сохраняются в localStorage и остаются после перезагрузки этого браузера.</span></div></div>
+  <div class="status"><i></i><div><strong>Импорт и экспорт JSON</strong><span>Резервное копирование и перенос черновиков между браузерами вручную.</span></div></div>
+  <div class="status"><i></i><div><strong>Автоматическая проверка кода лаборатории</strong><span>GitHub Actions запускает тесты проекта при обновлениях репозитория.</span></div></div>
+  <div class="status"><i></i><div><strong>Упаковка статических сайтов</strong><span>Отдельный GitHub Actions workflow может собрать ZIP из открытого репозитория по ручному запуску.</span></div></div>
+ </div></article>
+ <article class="card" style="margin-top:14px"><h3 style="margin:0;font-size:15px">Пока не реализовано</h3><div class="status-list">
+  <div class="status"><i class="planned"></i><div><strong>Запуск сборки непосредственно на сайте</strong><span>Нет серверного API и авторизации, поэтому сайт не может запускать workflow от имени пользователя.</span></div></div>
+  <div class="status"><i class="planned"></i><div><strong>Сборка APK и EXE</strong><span>Эти сборочные среды ещё не подключены.</span></div></div>
+  <div class="status"><i class="planned"></i><div><strong>Синхронизация проектов между устройствами</strong><span>Проекты пока хранятся только в браузере, где были созданы.</span></div></div>
+ </div></article>
+ <p class="caption" style="margin-top:14px">Версия интерфейса 0.4 · Функции обозначаются как готовые только после реализации.</p>
+</section>
+<footer>GPT Build Lab · Версия 0.4</footer>
+</div>
 
-    <aside class="stack">
-      <article class="card">
-        <h3>Что уже умеет платформа</h3>
-        <ul class="feature-list">
-          <li><span class="check">✓</span><span>Облачная упаковка статических сайтов в архив.</span></li>
-          <li><span class="check">✓</span><span>Проверка наличия index.html и целостности архива.</span></li>
-          <li><span class="check">✓</span><span>Защита от символических ссылок и файлов с секретами.</span></li>
-          <li><span class="check">✓</span><span>Лимиты на размер и количество файлов.</span></li>
-          <li><span class="check">✓</span><span>Автоматические тесты и проверка исходного кода.</span></li>
-          <li><span class="check">✓</span><span>Импорт и экспорт черновиков.</span></li>
-        </ul>
-      </article>
-      <article class="card">
-        <h3>Честный статус</h3>
-        <p class="caption">Мы показываем только то, что действительно реализовано.</p>
-        <ul class="feature-list">
-          <li><span class="check">●</span><span>Сборка сайтов: доступна через ручной запуск сценария GitHub.</span></li>
-          <li><span class="check">●</span><span>APK: ещё не подключён.</span></li>
-          <li><span class="check">●</span><span>EXE: ещё не подключён.</span></li>
-          <li><span class="check">●</span><span>Запуск сборки прямо с сайта: пока не подключён.</span></li>
-        </ul>
-        <a class="linkbtn" style="margin-top:16px" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions" target="_blank" rel="noopener noreferrer">История запусков ↗</a>
-      </article>
-    </aside>
-  </section>
-  <footer>GPT Build Lab · Версия 0.3 · Для открытой и безопасной разработки</footer>
-</main>
+<div class="modal-backdrop" id="projectModal" role="presentation">
+ <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-head"><h2 id="modalTitle">Новый проект</h2><button class="close" id="closeModal" aria-label="Закрыть">×</button></div>
+  <form id="projectForm">
+   <div class="form-grid">
+    <label class="full">Название проекта<input id="projectName" maxlength="60" placeholder="Например, мой сайт" required></label>
+    <label>Тип проекта<select id="projectType"><option value="web">Веб-сайт</option><option value="android-apk">Приложение Android</option><option value="windows-exe">Программа Windows</option></select></label>
+    <label>Режим<select id="projectProfile"><option value="debug">Проверочный</option><option value="release">Для выпуска</option></select></label>
+    <label class="full">Ссылка на GitHub (необязательно)<input id="projectSource" type="url" placeholder="https://github.com/owner/repository"></label>
+    <label class="full">Заметка<input id="projectNotes" maxlength="160" placeholder="Краткое описание или задача"></label>
+   </div>
+   <div class="modal-actions"><button type="button" class="btn" id="cancelModal">Отмена</button><button type="submit" class="btn primary">Создать проект</button></div>
+  </form>
+ </section>
+</div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+<div class="toast" id="toast" role="status"></div>
 <script>
-(() => {
-  "use strict";
-  const storageKey = "gpt-build-lab-drafts-v1";
-  const form = document.getElementById("jobForm");
-  const jobsNode = document.getElementById("jobs");
-  const countNode = document.getElementById("jobCount");
-  const badgeNode = document.getElementById("draftBadge");
-  const readJobs = () => {
-    try { const value = JSON.parse(localStorage.getItem(storageKey) || "[]"); return Array.isArray(value) ? value.slice(0,100) : []; }
-    catch (_) { return []; }
-  };
-  let jobs = readJobs();
-  const save = () => {
-    try { localStorage.setItem(storageKey, JSON.stringify(jobs)); }
-    catch (_) { alert("Не удалось сохранить черновики: возможно, хранилище браузера заполнено."); }
-  };
-  const safe = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const render = () => {
-    countNode.textContent = String(jobs.length);
-    badgeNode.textContent = jobs.length + (jobs.length === 1 ? " запись" : " записей");
-    if (!jobs.length) { jobsNode.innerHTML = '<div class="empty">Пока пусто. Создай первый черновик выше.</div>'; return; }
-    const targetNames = {web:"Сайт", "android-apk":"Приложение Android", "windows-exe":"Программа Windows"};
-  const profileNames = {debug:"Проверочный", release:"Для выпуска"};
-    jobsNode.innerHTML = jobs.map((job,index) =>
-      '<div class="job"><div><strong>' + safe(job.project) + '</strong><span>' + safe(targetNames[job.target] || job.target) + ' · ' + safe(profileNames[job.profile] || job.profile) + ' · ' + safe(new Date(job.createdAt).toLocaleString()) + '</span></div><div class="job-actions"><button class="secondary dark" type="button" data-export="' + index + '">JSON</button><button class="secondary dark" type="button" data-delete="' + index + '">Удалить</button></div></div>'
-    ).join("");
-  };
-  const download = (data,filename) => {
-    const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href=url; link.download=filename; link.click();
-    setTimeout(() => URL.revokeObjectURL(url),1000);
-  };
-  form.addEventListener("submit",event => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-    const project=document.getElementById("project").value.trim();
-    const source=document.getElementById("source").value.trim();
-    if(source && !/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(source)) {
-      alert("Укажи ссылку в формате https://github.com/owner/repository"); return;
-    }
-    jobs.unshift({id:(crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),project,target:document.getElementById("target").value,source,profile:document.getElementById("profile").value,notes:document.getElementById("notes").value.trim(),status:"draft",createdAt:new Date().toISOString()});
-    jobs=jobs.slice(0,100); save(); render(); form.reset();
-  });
-  jobsNode.addEventListener("click",event => {
-    const exp=event.target.getAttribute("data-export");
-    const del=event.target.getAttribute("data-delete");
-    if(exp!==null) download(jobs[Number(exp)],"gpt-build-job.json");
-    if(del!==null) { jobs.splice(Number(del),1); save(); render(); }
-  });
-  document.getElementById("exportAll").addEventListener("click",()=>download({schemaVersion:1,exportedAt:new Date().toISOString(),jobs},"gpt-build-lab-drafts.json"));
-  const importInput=document.getElementById("importFile");
-  document.getElementById("importDrafts").addEventListener("click",()=>importInput.click());
-  importInput.addEventListener("change",async()=>{
-    const file=importInput.files && importInput.files[0]; if(!file)return;
-    try {
-      if(file.size>1024*1024) throw new Error("Размер файла превышает 1 МБ.");
-      const parsed=JSON.parse(await file.text());
-      const incoming=Array.isArray(parsed)?parsed:parsed&&parsed.jobs;
-      if(!Array.isArray(incoming)||incoming.length>100) throw new Error("Некорректный список черновиков (максимум 100).");
-      const targets=["web","android-apk","windows-exe"],profiles=["debug","release"];
-      const imported=incoming.map(item=>{
-        if(!item||typeof item!=="object"||Array.isArray(item)) throw new Error("Некорректная запись.");
-        const project=String(item.project??"").trim(),target=String(item.target??""),profile=String(item.profile??"debug"),source=String(item.source??"").trim();
-        if(!project||project.length>60||!targets.includes(target)||!profiles.includes(profile)) throw new Error("Проверь название, платформу и профиль.");
-        if(source&&!/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(source)) throw new Error("Некорректная ссылка на GitHub.");
-        const date=new Date(item.createdAt);
-        return {id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),project,target,profile,source,notes:String(item.notes??"").slice(0,160),status:"draft",createdAt:Number.isNaN(date.getTime())?new Date().toISOString():date.toISOString()};
-      });
-      if(!imported.length) throw new Error("В файле нет черновиков.");
-      if(!confirm("Импортировать "+imported.length+" черновиков? Текущие записи сохранятся.")) return;
-      jobs=[...imported,...jobs].slice(0,100);save();render();alert("Импортировано: "+imported.length);
-    } catch(error) { alert("Не удалось импортировать: "+error.message); }
-    finally { importInput.value=""; }
-  });
-  render();
+(()=>{
+"use strict";
+const KEY="gpt-build-lab-drafts-v1",PREF="gpt-build-lab-preferences-v1";
+const $=id=>document.getElementById(id);
+const names={web:"Веб-сайт","android-apk":"Android","windows-exe":"Windows"};
+const profiles={debug:"Проверочный",release:"Для выпуска"};
+let projects=loadProjects(),prefs=loadPrefs(),toastTimer;
+function loadProjects(){try{const x=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(x)?x.slice(0,100):[]}catch{return[]}}
+function loadPrefs(){try{return JSON.parse(localStorage.getItem(PREF)||"{}")}catch{return{}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(projects));return true}catch{notify("Не удалось сохранить данные: память браузера заполнена.");return false}}
+function savePrefs(){localStorage.setItem(PREF,JSON.stringify(prefs))}
+function notify(message){const el=$("toast");el.textContent=message;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600)}
+function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function dateLabel(v){const d=new Date(v);return Number.isNaN(d.getTime())?"Дата неизвестна":d.toLocaleDateString("ru-RU",{day:"numeric",month:"short",year:"numeric"})}
+function weekCount(){const limit=Date.now()-7*86400000;return projects.filter(p=>new Date(p.createdAt).getTime()>=limit).length}
+function count(type){return projects.filter(p=>p.target===type).length}
+function goto(page){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+page));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));if(page==="drafts")renderDrafts();window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>goto(b.dataset.page)));
+document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>goto(b.dataset.goto)));
+function render(){
+$("homeTotal").textContent=projects.length;$("homeWeb").textContent=count("web");$("homeRecent").textContent=weekCount();
+$("statTotal").textContent=projects.length;$("statWeb").textContent=count("web");$("statAndroid").textContent=count("android-apk");$("statWindows").textContent=count("windows-exe");$("statWeek").textContent=weekCount();
+$("navDraftCount").textContent=projects.length?"· "+projects.length:"";
+const bars=[["Сайты",count("web")],["Android",count("android-apk")],["Windows",count("windows-exe")]],max=Math.max(1,...bars.map(x=>x[1]));
+$("statBars").innerHTML=bars.map(([label,n])=>'<div class="bar-row"><span>'+label+'</span><div class="bar-track"><div class="bar-fill" style="width:'+(n/max*100)+'%"></div></div><strong>'+n+'</strong></div>').join("");
+const recent=[...projects].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
+$("recentProjects").innerHTML=recent.length?recent.map(p=>'<div class="quick"><div><strong>'+escapeHTML(p.project)+'</strong><br><span>'+escapeHTML(names[p.target]||p.target)+' · '+dateLabel(p.createdAt)+'</span></div><button class="btn small ghost" data-open-drafts>Открыть</button></div>').join(""):'<div class="empty">Пока нет проектов. Создай первый.</div>';
+$("recentProjects").querySelectorAll("[data-open-drafts]").forEach(b=>b.addEventListener("click",()=>goto("drafts")));
+renderDrafts();
+}
+function renderDrafts(){
+const q=$("searchDrafts").value.trim().toLowerCase(),filter=$("filterTarget").value;
+const items=projects.map((p,i)=>({...p,_i:i})).filter(p=>(filter==="all"||p.target===filter)&&(!q||(p.project+" "+(p.notes||"")).toLowerCase().includes(q))).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+$("draftList").innerHTML=items.length?items.map(p=>'<article class="draft"><div class="draft-main"><strong>'+escapeHTML(p.project)+'</strong><small>'+escapeHTML(names[p.target]||p.target)+' · '+escapeHTML(profiles[p.profile]||p.profile)+' · '+dateLabel(p.createdAt)+(p.source?' · GitHub привязан':'')+'</small>'+(p.notes?'<small>'+escapeHTML(p.notes)+'</small>':'')+'</div><div class="draft-actions"><button class="btn small" data-export="'+p._i+'">Экспорт</button><button class="btn small danger" data-delete="'+p._i+'">Удалить</button></div></article>').join(""):'<div class="empty">'+(projects.length?"Ничего не найдено по заданным условиям.":"Пока нет проектов. Нажми «Новый проект», чтобы создать первый.")+'</div>';
+}
+function openModal(){$("projectModal").classList.add("open");$("projectName").focus()}
+function closeModal(){$("projectModal").classList.remove("open");$("projectForm").reset()}
+["newProjectTop","newProjectHero","newProjectDrafts"].forEach(id=>$(id).addEventListener("click",openModal));
+$("closeModal").addEventListener("click",closeModal);$("cancelModal").addEventListener("click",closeModal);
+$("projectModal").addEventListener("click",e=>{if(e.target===$("projectModal"))closeModal()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+$("projectForm").addEventListener("submit",e=>{
+e.preventDefault();if(!$("projectForm").reportValidity())return;
+const source=$("projectSource").value.trim();
+if(source&&!/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(source)){notify("Укажи ссылку GitHub в формате owner/repository.");return}
+projects.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),project:$("projectName").value.trim(),target:$("projectType").value,profile:$("projectProfile").value,source,notes:$("projectNotes").value.trim(),status:"draft",createdAt:new Date().toISOString()});
+projects=projects.slice(0,100);if(save()){closeModal();render();goto("drafts");notify("Проект добавлен в черновики.")}
+});
+$("draftList").addEventListener("click",e=>{
+const ex=e.target.closest("[data-export]"),del=e.target.closest("[data-delete]");
+if(ex){const p=projects[Number(ex.dataset.export)];if(p)download(p,"gpt-build-project.json")}
+if(del){const i=Number(del.dataset.delete);if(!projects[i])return;if(prefs.confirmDelete!==false&&!confirm("Удалить проект «"+projects[i].project+"»?"))return;projects.splice(i,1);save();render();notify("Проект удалён.")}
+});
+$("searchDrafts").addEventListener("input",renderDrafts);$("filterTarget").addEventListener("change",renderDrafts);
+function download(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
+function exportAll(){download({schemaVersion:1,exportedAt:new Date().toISOString(),jobs:projects},"gpt-build-lab-backup.json");notify("Резервная копия подготовлена.")}
+["settingsExport","draftExport"].forEach(id=>$(id).addEventListener("click",exportAll));
+const importFile=$("importFile");["settingsImport","draftImport"].forEach(id=>$(id).addEventListener("click",()=>importFile.click()));
+importFile.addEventListener("change",async()=>{
+const f=importFile.files&&importFile.files[0];if(!f)return;
+try{if(f.size>1024*1024)throw Error("Файл больше 1 МБ.");const data=JSON.parse(await f.text()),arr=Array.isArray(data)?data:data.jobs;if(!Array.isArray(arr)||arr.length>100)throw Error("Неверный формат резервной копии.");
+const incoming=arr.map(p=>{if(!p||typeof p!=="object")throw Error("Некорректная запись.");const project=String(p.project||"").trim(),target=String(p.target||""),profile=String(p.profile||"debug"),source=String(p.source||"").trim();if(!project||project.length>60||!["web","android-apk","windows-exe"].includes(target)||!["debug","release"].includes(profile))throw Error("Проверь название, тип и режим проекта.");if(source&&!/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(source))throw Error("Некорректная ссылка GitHub.");return{id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),project,target,profile,source,notes:String(p.notes||"").slice(0,160),status:"draft",createdAt:Number.isNaN(new Date(p.createdAt).getTime())?new Date().toISOString():new Date(p.createdAt).toISOString()}});
+if(!incoming.length)throw Error("В файле нет проектов.");if(!confirm("Добавить "+incoming.length+" проектов? Существующие записи сохранятся."))return;projects=[...incoming,...projects].slice(0,100);save();render();notify("Импортировано: "+incoming.length);
+}catch(err){notify("Ошибка импорта: "+err.message)}finally{importFile.value=""}
+});
+$("darkMode").checked=!!prefs.dark;$("confirmDelete").checked=prefs.confirmDelete!==false;document.body.classList.toggle("dark",!!prefs.dark);
+$("darkMode").addEventListener("change",e=>{prefs.dark=e.target.checked;savePrefs();document.body.classList.toggle("dark",prefs.dark)});
+$("confirmDelete").addEventListener("change",e=>{prefs.confirmDelete=e.target.checked;savePrefs();notify("Настройка сохранена.")});
+$("clearAll").addEventListener("click",()=>{if(!projects.length){notify("Рабочее пространство уже пустое.");return}if(confirm("Удалить все "+projects.length+" проектов из этого браузера? Это действие нельзя отменить.")){projects=[];save();render();notify("Рабочее пространство очищено.")}});
+render();
 })();
 </script>
 </body>
