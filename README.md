@@ -8,12 +8,23 @@ A small, transparent starting point for a cloud build workspace.
 
 - **Web dashboard** in `web/index.html` — responsive, dependency-free interface.
 - **Draft job manager** — create build-job drafts, persist them in the current browser using localStorage, and export a JSON job description.
-- **Validation workflow** — GitHub Actions checks the dashboard and project configuration on pushes and pull requests.
+- **Regression tests** in `tests/test_dashboard.py` — checks dashboard metadata, required controls, target configuration, honest capability labels, and security warnings.
+- **Validation workflow** — GitHub Actions runs the regression tests and project validator on pushes and pull requests.
+- **GitHub Pages workflow** — deploys the contents of `web/` when Pages is configured to use GitHub Actions.
 - **Roadmap and build matrix** — clearly separates implemented features from planned integrations.
 
 ## Open the dashboard
 
-Open [web/index.html](web/index.html) in a modern browser. No server, package installation, or API key is required for this prototype.
+The published site is intended to be available at [GPT Build Lab on GitHub Pages](https://artemkinus-collab.github.io/GPT-Build-Lab/) after Pages deployment succeeds. The source is in [web/index.html](web/index.html).
+
+## Run checks locally
+
+The checks use only Python's standard library:
+
+```bash
+python -m unittest discover -s tests -v
+python scripts/validate.py
+```
 
 ## Current limitations
 
@@ -21,11 +32,12 @@ Open [web/index.html](web/index.html) in a modern browser. No server, package in
 - No cloud runner is provisioned or triggered by the dashboard.
 - Draft jobs are stored only in the browser profile where they were created.
 - Exported job JSON is a specification, not a runnable build artifact.
+- A successful GitHub Pages deployment must be verified separately; having a workflow file alone does not publish the site.
 - Do not put secrets in this public repository or in exported job files.
 
 ## Planned phases
 
-1. Foundation and validation (current).
+1. Foundation, regression tests, and validation (current).
 2. Connect a controlled GitHub Actions workflow to build a static web artifact.
 3. Add Android SDK build runner for APK projects.
 4. Add Windows runner for EXE projects.
