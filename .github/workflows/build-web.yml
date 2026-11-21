@@ -108,7 +108,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Report build result to GPT Build Lab
-        if: always() && inputs.build_id != '' && vars.SUPABASE_FUNCTIONS_URL != '' && secrets.BUILD_CALLBACK_SECRET != ''
+        if: always() && inputs.build_id != '' && vars.SUPABASE_FUNCTIONS_URL != ''
         env:
           BUILD_ID: ${{ inputs.build_id }}
           BUILD_STATUS: ${{ job.status }}
@@ -116,6 +116,7 @@ jobs:
           CALLBACK_SECRET: ${{ secrets.BUILD_CALLBACK_SECRET }}
           ARTIFACT_NAME: gpt-build-lab-web-${{ github.run_number }}
           WORKFLOW_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        continue-on-error: true
         run: |
           curl --fail-with-body --silent --show-error \
             -X POST "$CALLBACK_URL" \
