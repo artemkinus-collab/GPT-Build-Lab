@@ -24,7 +24,7 @@ profiles.id, projects.owner_id, and builds.owner_id refer to auth.users.id. Row 
 1. Create a Supabase project.
 2. Run supabase/schema.sql in the Supabase SQL editor.
 3. Enable Email provider and GitHub provider in Supabase Auth. Configure the GitHub OAuth callback URL shown by Supabase.
-4. Deploy the two Edge Functions.
+4. Deploy the three Edge Functions: start-build, build-status, and build-callback.
 5. Configure Edge Function secrets: GITHUB_TOKEN (fine-grained token limited to this repository; Actions read/write and Contents read), GITHUB_OWNER=artemkinus-collab, GITHUB_REPO=GPT-Build-Lab, BUILD_CALLBACK_SECRET (long random secret), APP_ORIGIN=https://artemkinus-collab.github.io.
 6. Configure GitHub Actions repository secret BUILD_CALLBACK_SECRET with the same value, and repository variable SUPABASE_FUNCTIONS_URL with the project's functions base URL.
 7. Configure frontend with Supabase project URL and public anon key. The anon key is public; service-role keys and GitHub tokens are not.
