@@ -47,3 +47,32 @@ create policy "projects_update_own" on public.projects for update to authenticat
 create policy "projects_delete_own" on public.projects for delete to authenticated using (auth.uid() = owner_id);
 create policy "builds_read_own" on public.builds for select to authenticated using (auth.uid() = owner_id);
 -- Build rows are created/updated only by trusted Edge Functions using the service role.
+
+-- Create a profile after signup. A generated suffix avoids collisions between providers.
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  requested_name text;
+  safe_name text;
+begin
+  requested_name := coalesce(
+    new.raw_user_meta_data ->> 'username',
+    new.raw_user_meta_data ->> 'user_name',
+    split_part(coalesce(new.email, 'member'), '@', 1)
+  );
+  safe_name := regexp_replace(lower(requested_name), '[^a-z0-9_-]', '', 'g');
+  safe_name := left(coalesce(nullif(safe_name, ''), 'member'), 15) || '_' || left(replace(new.id::text, '-', ''), 8);
+  insert into public.profiles (id, username) values (new.id, safe_name)
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
