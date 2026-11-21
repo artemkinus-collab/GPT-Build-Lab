@@ -41,8 +41,8 @@ def main():
         parser.feed(source)
         check("<!doctype html>" in source.lower(), "Dashboard should declare HTML5 doctype")
         check(parser.title_seen, "Dashboard is missing a title element")
-        check("jobForm" in parser.ids, "Dashboard is missing the job creation form")
-        check("jobs" in parser.ids, "Dashboard is missing the drafts list")
+        check("projectForm" in parser.ids, "Dashboard is missing the project creation form")
+        check("draftList" in parser.ids, "Dashboard is missing the projects list")
         check(not parser.duplicate_ids, "Duplicate HTML ids: " + ", ".join(parser.duplicate_ids))
 
     if matrix.is_file():
