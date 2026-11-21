@@ -87,7 +87,7 @@
           <label class="wide">Source repository<input id="source" name="source" placeholder="https://github.com/owner/repository" type="url"></label>
           <label>Build profile<select id="profile" name="profile"><option value="debug">Debug</option><option value="release">Release (planned)</option></select></label>
           <label>Notes<input id="notes" name="notes" maxlength="160" placeholder="Optional build notes"></label>
-          <div class="wide actions"><button type="submit">＋ Save draft</button><button class="secondary" type="button" id="exportAll">Export drafts JSON</button></div>
+          <div class="wide actions"><button type="submit">＋ Save draft</button><button class="secondary" type="button" id="exportAll">Export drafts JSON</button><button class="secondary" type="button" id="importDrafts">Import JSON</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
         </form>
         <div class="notice">Security note: never enter passwords, access tokens, private keys, signing keys, or keystore contents here. The repository is public.</div>
       </article>
@@ -169,6 +169,53 @@
         }
       });
       document.getElementById("exportAll").addEventListener("click", () => download({schemaVersion:1, exportedAt:new Date().toISOString(), jobs}, "gpt-build-lab-drafts.json"));
+      const importInput = document.getElementById("importFile");
+      document.getElementById("importDrafts").addEventListener("click", () => importInput.click());
+      importInput.addEventListener("change", async () => {
+        const file = importInput.files && importInput.files[0];
+        if (!file) return;
+        try {
+          if (file.size > 1024 * 1024) throw new Error("File is larger than 1 MB.");
+          const parsed = JSON.parse(await file.text());
+          const incoming = Array.isArray(parsed) ? parsed : parsed && parsed.jobs;
+          if (!Array.isArray(incoming)) throw new Error("JSON must contain a jobs array.");
+          if (incoming.length > 100) throw new Error("A maximum of 100 drafts can be imported at once.");
+          const allowedTargets = ["web", "android-apk", "windows-exe"];
+          const allowedProfiles = ["debug", "release"];
+          const imported = incoming.map(item => {
+            if (!item || typeof item !== "object" || Array.isArray(item)) throw new Error("A draft entry is not an object.");
+            const project = String(item.project ?? "").trim();
+            const target = String(item.target ?? "");
+            const profile = String(item.profile ?? "debug");
+            const source = String(item.source ?? "").trim();
+            if (!project || project.length > 60) throw new Error("Each draft needs a project name up to 60 characters.");
+            if (!allowedTargets.includes(target)) throw new Error("A draft contains an unsupported build target.");
+            if (!allowedProfiles.includes(profile)) throw new Error("A draft contains an unsupported build profile.");
+            if (source && !/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(source)) throw new Error("A draft contains an invalid GitHub repository URL.");
+            const date = new Date(item.createdAt);
+            return {
+              id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random(),
+              project,
+              target,
+              source,
+              profile,
+              notes: String(item.notes ?? "").slice(0, 160),
+              status: "draft",
+              createdAt: Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString()
+            };
+          });
+          if (!imported.length) throw new Error("The file contains no drafts.");
+          if (!confirm("Import " + imported.length + " draft(s)? Existing drafts will be kept.")) return;
+          jobs = [...imported, ...jobs].slice(0, 100);
+          save();
+          render();
+          alert("Imported " + imported.length + " draft(s).");
+        } catch (error) {
+          alert("Import failed: " + error.message);
+        } finally {
+          importInput.value = "";
+        }
+      });
       render();
     })();
   </script>
