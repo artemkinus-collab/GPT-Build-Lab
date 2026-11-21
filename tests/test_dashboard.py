@@ -69,9 +69,25 @@ class DashboardTests(unittest.TestCase):
         self.assertIn('id="password"', auth)
         self.assertIn('id="confirmPassword"', auth)
         self.assertIn("Зарегистрироваться", auth)
-        self.assertIn("Сервер аккаунтов ещё не подключён", auth)
+        self.assertIn("Сервер аккаунтов не настроен", auth)
         self.assertNotIn('type="email"', auth)
         self.assertNotIn("localStorage.setItem", auth)
+
+    def test_supabase_account_integration_is_wired(self):
+        auth = (ROOT / "web" / "auth.html").read_text(encoding="utf-8")
+        config = (ROOT / "web" / "supabase-config.js").read_text(encoding="utf-8")
+        migration = (ROOT / "supabase" / "migrations" / "202611210002_username_accounts.sql").read_text(encoding="utf-8")
+        self.assertIn("signUp", auth)
+        self.assertIn("signInWithPassword", auth)
+        self.assertIn("accounts.gptbuildlab.invalid", auth)
+        self.assertIn("supabase-config.js", auth)
+        self.assertIn("GBL_SUPABASE_CONFIG", config)
+        self.assertIn("create table if not exists public.profiles", migration)
+        self.assertIn("enable row level security", migration.lower())
+        self.assertIn("profiles_username_format", migration)
+        self.assertNotIn("service_role", config.lower())
+        self.assertIn("refreshAccount", self.html)
+        self.assertIn("auth.onAuthStateChange", self.html)
 
     def test_navigation_order_and_custom_dropdowns(self):
         order = ['data-page="home"', 'data-page="drafts"', 'data-page="statistics"',
