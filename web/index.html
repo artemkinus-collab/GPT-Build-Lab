@@ -209,6 +209,8 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
 </div>
 <input type="file" id="importFile" accept=".json,application/json" hidden>
 <div class="toast" id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
 <script>
 (()=>{
 "use strict";
@@ -217,6 +219,13 @@ const $=id=>document.getElementById(id);
 const names={web:"Веб-сайт","android-apk":"Android","windows-exe":"Windows"};
 const profiles={debug:"Проверочный",release:"Для выпуска"};
 let projects=loadProjects(),prefs=loadPrefs(),toastTimer;
+let gblSupabase=null,currentAuthUser=null;
+const supaConfig=window.GBL_SUPABASE_CONFIG||{};
+if(window.supabase?.createClient&&typeof supaConfig.url==="string"&&/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(supaConfig.url)&&typeof supaConfig.anonKey==="string"&&supaConfig.anonKey.length>20&&!supaConfig.anonKey.includes("YOUR_")){
+ gblSupabase=window.supabase.createClient(supaConfig.url,supaConfig.anonKey);
+ window.gblSupabase=gblSupabase;
+}
+
 function loadProjects(){try{const x=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(x)?x.slice(0,100):[]}catch{return[]}}
 function loadPrefs(){try{return JSON.parse(localStorage.getItem(PREF)||"{}")}catch{return{}}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(projects));return true}catch{notify("Не удалось сохранить данные: память браузера заполнена.");return false}}
@@ -242,6 +251,31 @@ function applyAvatar(){
  const icon=$("accountOpen");if(icon)icon.textContent=value;
  document.querySelectorAll("[data-avatar]").forEach(b=>b.classList.toggle("active",b.dataset.avatar===value));
 }
+async function refreshAccount(session){
+ const user=session?.user||null;currentAuthUser=user;
+ if(!user){$("accountWrap").hidden=true;$("authOpen").hidden=false;return}
+ let profile=null;
+ if(gblSupabase){
+  const {data,error}=await gblSupabase.from("profiles").select("username,avatar").eq("id",user.id).maybeSingle();
+  if(!error)profile=data;
+ }
+ const username=profile?.username||user.user_metadata?.username||"Пользователь";
+ $("accountMenuName").textContent=username;
+ $("accountWrap").hidden=false;$("authOpen").hidden=true;
+ if(profile?.avatar){prefs.avatar=profile.avatar;savePrefs()}
+ applyAvatar();
+}
+async function initAuth(){
+ if(!gblSupabase)return;
+ try{
+  const {data,error}=await gblSupabase.auth.getSession();
+  if(error)throw error;
+  await refreshAccount(data.session);
+  gblSupabase.auth.onAuthStateChange((_event,session)=>{
+   setTimeout(()=>refreshAccount(session),0);
+  });
+ }catch(error){notify("Не удалось проверить сеанс аккаунта: "+(error.message||"ошибка"))}
+}
 function initAccountMenu(){
  const open=$("accountOpen"),menu=$("accountMenu");
  if(!open||!menu)return;
@@ -250,13 +284,20 @@ function initAccountMenu(){
  });
  document.addEventListener("click",e=>{if(!e.target.closest("#accountWrap")){menu.hidden=true;open.setAttribute("aria-expanded","false")}});
  $("accountSettings").addEventListener("click",()=>{menu.hidden=true;goto("settings")});
- $("accountSignOut").addEventListener("click",()=>{
-  if(window.gblSupabase){window.gblSupabase.auth.signOut().then(()=>{ $("accountWrap").hidden=true;$("authOpen").hidden=false;notify("Вы вышли из аккаунта.") }).catch(()=>notify("Не удалось завершить сеанс."))}
-  else notify("Серверная авторизация ещё не настроена.");
+ $("accountSignOut").addEventListener("click",async()=>{
+  if(!gblSupabase){notify("Supabase не настроен.");return}
+  const {error}=await gblSupabase.auth.signOut();
+  if(error){notify("Не удалось завершить сеанс: "+error.message);return}
+  menu.hidden=true;open.setAttribute("aria-expanded","false");notify("Вы вышли из аккаунта.");
  });
 }
-document.querySelectorAll("[data-avatar]").forEach(button=>button.addEventListener("click",()=>{
- prefs.avatar=button.dataset.avatar;savePrefs();applyAvatar();notify("Иконка аккаунта сохранена.");
+document.querySelectorAll("[data-avatar]").forEach(button=>button.addEventListener("click",async()=>{
+ const avatar=button.dataset.avatar;
+ if(currentAuthUser&&gblSupabase){
+  const {error}=await gblSupabase.from("profiles").update({avatar}).eq("id",currentAuthUser.id);
+  if(error){notify("Не удалось сохранить аватар в профиле: "+error.message);return}
+ }
+ prefs.avatar=avatar;savePrefs();applyAvatar();notify(currentAuthUser?"Аватар профиля обновлён.":"Иконка сохранена локально. Войди, чтобы привязать её к аккаунту.");
 }));
 initSettingsSections();applyAvatar();initAccountMenu();
 function render(){
@@ -314,6 +355,7 @@ $("darkMode").addEventListener("change",e=>{prefs.dark=e.target.checked;savePref
 $("confirmDelete").addEventListener("change",e=>{prefs.confirmDelete=e.target.checked;savePrefs();notify("Настройка сохранена.")});
 $("clearAll").addEventListener("click",()=>{if(!projects.length){notify("Рабочее пространство уже пустое.");return}if(confirm("Удалить все "+projects.length+" проектов из этого браузера? Это действие нельзя отменить.")){projects=[];save();render();notify("Рабочее пространство очищено.")}});
 render();
+initAuth();
 })();
 </script>
 </body>
