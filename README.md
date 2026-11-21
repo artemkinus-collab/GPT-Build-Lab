@@ -2,7 +2,7 @@
 
 A public cloud build workspace. The dashboard is published with GitHub Pages; controlled build jobs run separately in GitHub Actions.
 
-> **Current stage:** Static Web packaging is available for public repositories containing a static site. Android APK and Windows EXE compilation are not implemented yet.
+> **Current stage:** Static Web ZIP packaging is available through GitHub Actions. Account/database integration scaffolding has been added, but it is not live until a Supabase project and secrets are configured. Android APK and Windows EXE compilation are not implemented yet.
 
 ## Open the dashboard
 
@@ -33,6 +33,12 @@ The artifact is retained for 7 days. This workflow packages static files only: i
 - Uses read-only repository permissions and does not persist checkout credentials.
 
 Private source repositories are not supported by this first version. Use only source projects you are authorized to package.
+
+## Account and cloud build foundation
+
+The repository now includes a Supabase schema for user-owned projects/build history and an authenticated Edge Function that queues the Web ZIP workflow. The workflow can report queued build status to Supabase when the required secrets are configured. Setup instructions and security boundaries are documented in [Account and Build Architecture](docs/ACCOUNT_AND_BUILD_ARCHITECTURE.md).
+
+This integration is **not active on the public dashboard yet**: Supabase credentials, OAuth provider setup, and server-side GitHub secrets must be configured first. No credentials belong in the public page.
 
 ## Dashboard features
 
