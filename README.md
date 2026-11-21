@@ -53,6 +53,16 @@ python scripts/check_inline_js.py
 python scripts/validate.py
 ```
 
+## Cloud account and build foundation
+
+The `feature/cloud-build-foundation` branch contains an initial Supabase integration scaffold:
+- PostgreSQL schema with per-user profiles, projects, and build history.
+- Row Level Security policies for user-owned records.
+- Edge Functions for authenticated build dispatch, status lookup, and a protected GitHub Actions callback.
+- A workflow input for correlating a site-requested build with its GitHub Actions run.
+
+This foundation is not live yet. It requires a Supabase project, SQL setup, OAuth provider configuration, Edge Function deployment, and server-side secrets. See [Cloud architecture setup](docs/CLOUD_ARCHITECTURE.md).
+
 ## Current limitations
 
 - The Web pipeline packages static files; it does not compile JavaScript frameworks or run custom build commands.
