@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f3ff"><title>Аккаунт — GPT Build Lab</title>
+<style>
+:root{color-scheme:light;--bg:#f6f5fb;--panel:#fff;--ink:#262442;--muted:#85839b;--line:#e9e6f2;--accent:#7668df;--soft:#efedff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 10% 0,#e8e4ff,transparent 35%),radial-gradient(ellipse at 95% 10%,#e0f4ff,transparent 30%),var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,sans-serif}
+.card{width:min(440px,100%);padding:clamp(22px,5vw,34px);border:1px solid var(--line);border-radius:25px;background:var(--panel);box-shadow:0 22px 70px #443b7618}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:25px}.logo{width:44px;height:44px;border-radius:15px;background:linear-gradient(145deg,#8878ef,#65c6d7);display:grid;place-items:center;color:#fff;font-size:24px}.brand strong{display:block;font-size:16px}.brand small{color:var(--muted);font-size:11px}
+h1{font-size:25px;letter-spacing:-.7px;margin:0 0 7px}.sub{color:var(--muted);font-size:12px;margin:0 0 22px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;padding:4px;background:var(--soft);border-radius:12px;margin-bottom:20px}.tabs button{border:0;border-radius:9px;padding:10px;background:transparent;color:var(--muted);font:inherit;font-weight:750;cursor:pointer}.tabs button.active{background:white;color:var(--accent);box-shadow:0 2px 8px #30295a12}
+form{display:grid;gap:13px}label{display:grid;gap:6px;font-size:11px;color:var(--muted);font-weight:750}input{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:#fbfaff;color:var(--ink);font:inherit;font-size:13px;outline:none}input:focus{border-color:#988bf0;box-shadow:0 0 0 3px #9284ed22}
+button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradient(120deg,#7668df,#9385ee);color:white;font:inherit;font-weight:800;cursor:pointer;margin-top:4px}
+.note{margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);color:var(--muted);font-size:11px;line-height:1.55}
+.status{min-height:20px;color:#b45b62;font-size:12px;margin-top:10px}.back{display:block;text-align:center;margin-top:18px;color:var(--accent);font-size:12px;font-weight:750;text-decoration:none}
+[hidden]{display:none!important}
+</style></head><body>
+<main class="card">
+ <div class="brand"><div class="logo">✦</div><div><strong>GPT Build Lab</strong><small>Лаборатория проектов</small></div></div>
+ <h1 id="title">С возвращением</h1><p class="sub" id="subtitle">Войди в своё рабочее пространство.</p>
+ <div class="tabs"><button type="button" class="active" id="loginTab">Войти</button><button type="button" id="registerTab">Зарегистрироваться</button></div>
+ <form id="authForm" novalidate>
+  <label>Имя пользователя<input id="username" name="username" autocomplete="username" minlength="3" maxlength="24" placeholder="Например, artem_dev" required></label>
+  <label>Пароль<input id="password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="Не менее 8 символов" required></label>
+  <label id="confirmWrap" hidden>Подтвердите пароль<input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Повторите пароль"></label>
+  <button class="submit" id="submit" type="submit">Войти</button>
+ </form>
+ <div class="status" id="status" role="status"></div>
+ <div class="note">Интерфейс входа и регистрации готов. Реальная проверка имени пользователя и пароля пока не подключена: для неё нужен серверный модуль аккаунтов и база профилей. Пароли не сохраняются в браузере и не отправляются в демонстрационный режим.</div>
+ <a class="back" href="./index.html">← Вернуться в GPT Build Lab</a>
+</main>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id);let mode="login";
+ function setMode(next){
+  mode=next;const registering=mode==="register";
+  $("loginTab").classList.toggle("active",!registering);$("registerTab").classList.toggle("active",registering);
+  $("title").textContent=registering?"Создать аккаунт":"С возвращением";
+  $("subtitle").textContent=registering?"Зарегистрируй имя пользователя для GPT Build Lab.":"Войди в своё рабочее пространство.";
+  $("confirmWrap").hidden=!registering;$("confirmPassword").required=registering;
+  $("password").autocomplete=registering?"new-password":"current-password";
+  $("submit").textContent=registering?"Зарегистрироваться":"Войти";$("status").textContent="";
+ }
+ $("loginTab").addEventListener("click",()=>setMode("login"));
+ $("registerTab").addEventListener("click",()=>setMode("register"));
+ $("authForm").addEventListener("submit",e=>{
+  e.preventDefault();const username=$("username").value.trim(),password=$("password").value;
+  if(!/^[A-Za-z0-9_.-]{3,24}$/.test(username)){ $("status").textContent="Имя пользователя: 3–24 символа, латинские буквы, цифры, точка, дефис или _.";return}
+  if(password.length<8){$("status").textContent="Пароль должен содержать не менее 8 символов.";return}
+  if(mode==="register"&&password!==$("confirmPassword").value){$("status").textContent="Пароли не совпадают.";return}
+  $("status").textContent="Сервер аккаунтов ещё не подключён. Данные не сохранены, вход не выполнен.";
+ });
+})();
+</script></body></html>
