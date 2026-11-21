@@ -43,8 +43,16 @@ class DashboardTests(unittest.TestCase):
     def test_dashboard_has_unique_required_ids(self):
         self.assertEqual(len(self.audit.ids), len(set(self.audit.ids)))
         for required in ("projectForm", "draftList", "searchDrafts", "importFile",
-                         "projectModal", "newProjectTop", "statTotal"):
+                         "projectModal", "authOpen", "authModal", "authForm", "settingsAuthOpen", "statTotal"):
             self.assertIn(required, self.audit.ids)
+
+
+    def test_account_entry_points_are_visible(self):
+        self.assertIn('id="authOpen"', self.html)
+        self.assertIn("Зарегистрироваться", self.html)
+        self.assertIn("Продолжить через GitHub", self.html)
+        self.assertIn("Аккаунт GPT Build Lab", self.html)
+        self.assertNotIn('id="newProjectTop"', self.html)
 
     def test_navigation_order_and_custom_dropdowns(self):
         order = ['data-page="home"', 'data-page="drafts"', 'data-page="statistics"',
