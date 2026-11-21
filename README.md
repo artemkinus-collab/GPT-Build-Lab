@@ -1,53 +1,80 @@
 # GPT Build Lab
 
-A small, transparent starting point for a cloud build workspace.
+A public cloud build workspace. The dashboard is published with GitHub Pages; controlled build jobs run separately in GitHub Actions.
 
-> **Current stage:** foundation / prototype. This repository does not yet build APK or EXE files. The dashboard currently manages local draft build jobs in the browser; actual cloud runners will be added in later phases.
-
-## What is included
-
-- **Web dashboard** in `web/index.html` — responsive, dependency-free interface.
-- **Draft job manager** — create build-job drafts, persist them in the current browser using localStorage, export JSON, and safely import validated JSON backups.
-- **Regression tests** in `tests/test_dashboard.py` — checks dashboard metadata, required controls, target configuration, honest capability labels, and security warnings.
-- **Validation workflow** — GitHub Actions runs the regression tests and project validator on pushes and pull requests.
-- **GitHub Pages workflow** — deploys the contents of `web/` when Pages is configured to use GitHub Actions.
-- **Roadmap and build matrix** — clearly separates implemented features from planned integrations.
+> **Current stage:** Static Web packaging is available for public repositories containing a static site. Android APK and Windows EXE compilation are not implemented yet.
 
 ## Open the dashboard
 
-The published site is intended to be available at [GPT Build Lab on GitHub Pages](https://artemkinus-collab.github.io/GPT-Build-Lab/) after Pages deployment succeeds. The source is in [web/index.html](web/index.html).
+[GPT Build Lab](https://artemkinus-collab.github.io/GPT-Build-Lab/)
 
-## Run checks locally
+## Available: static Web ZIP packaging
 
-The checks use only Python's standard library:
+The **Build Web Artifact** workflow accepts:
+- A public GitHub repository in `owner/repository` form.
+- A branch, tag, or commit reference.
+- An optional project subfolder containing a root-level `index.html`.
+
+To run it:
+1. Open [Build Web Artifact](https://github.com/artemkinus-collab/GPT-Build-Lab/actions/workflows/build-web.yml).
+2. Select **Run workflow**.
+3. Enter the public repository, ref, and project folder.
+4. Wait for the workflow to finish successfully.
+5. Download the ZIP from the run's **Artifacts** section.
+
+The artifact is retained for 7 days. This workflow packages static files only: it does not run npm, shell scripts, build hooks, or other code from the submitted project.
+
+### Packaging safeguards
+
+- Requires a root-level `index.html` in the selected project folder.
+- Rejects symbolic links and secret-like files such as `.env`, private key files, and keystores.
+- Excludes dependency and Git metadata folders.
+- Limits input to 10,000 files and 100 MiB uncompressed.
+- Uses read-only repository permissions and does not persist checkout credentials.
+
+Private source repositories are not supported by this first version. Use only source projects you are authorized to package.
+
+## Dashboard features
+
+- Responsive Russian-language interface.
+- Local draft management using browser `localStorage`.
+- JSON import/export with validation.
+- Direct links to the Web Build workflow and Actions history.
+
+Drafts remain in the browser where they were created; they are not uploaded to GitHub.
+
+## Run validation
+
+Requires Python 3.12+; the JavaScript syntax check additionally requires Node.js.
 
 ```bash
 python -m unittest discover -s tests -v
+python scripts/check_inline_js.py
 python scripts/validate.py
 ```
 
 ## Current limitations
 
-- No APK/EXE compilation is performed yet.
-- No cloud runner is provisioned or triggered by the dashboard.
-- Draft jobs are stored only in the browser profile where they were created.
-- Exported job JSON is a specification, not a runnable build artifact.
-- A successful GitHub Pages deployment must be verified separately; having a workflow file alone does not publish the site.
-- Do not put secrets in this public repository or in exported job files.
+- The Web pipeline packages static files; it does not compile JavaScript frameworks or run custom build commands.
+- APK and EXE pipelines are planned, not available.
+- The dashboard cannot trigger Actions directly because no GitHub token is embedded in the public page. Start the workflow in GitHub Actions.
+- Build artifacts expire after 7 days.
+- GitHub Pages and this repository are public. Never commit secrets, tokens, signing keys, passwords, or private data.
 
-## Planned phases
+## Project structure
 
-1. Foundation, regression tests, and validation (current).
-2. Connect a controlled GitHub Actions workflow to build a static web artifact.
-3. Add Android SDK build runner for APK projects.
-4. Add Windows runner for EXE projects.
-5. Add test reports, artifact links, and deployment targets.
+- `web/index.html` — public dashboard.
+- `scripts/package_web.py` — safe static ZIP packager.
+- `scripts/validate.py` — project sanity checks.
+- `scripts/check_inline_js.py` — inline JavaScript syntax check.
+- `tests/` — regression and packaging safety tests.
+- `.github/workflows/` — validation, Pages deployment, and Web packaging workflows.
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) and [config/build-matrix.json](config/build-matrix.json).
+See [the roadmap](docs/ROADMAP.md) and [build matrix](config/build-matrix.json).
 
 ## Security principles
 
-- Use GitHub Actions secrets or environment-scoped secrets for credentials when integrations are introduced.
-- Grant workflows the minimum permissions they need.
-- Never commit private keys, access tokens, passwords, signing keys, or keystores.
-- Review workflow changes before enabling privileged deployment or release actions.
+- Keep workflow permissions minimal.
+- Never run untrusted source scripts in packaging jobs.
+- Do not expose GitHub tokens in client-side JavaScript.
+- Review workflow changes before adding privileged release or deployment steps.
