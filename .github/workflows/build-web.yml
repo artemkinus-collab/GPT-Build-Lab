@@ -1,0 +1,102 @@
+name: Build Web Artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_repository:
+        description: Public GitHub repository (owner/repository)
+        required: true
+        type: string
+      project_ref:
+        description: Branch, tag, or commit to package
+        required: true
+        default: main
+        type: string
+      project_path:
+        description: Folder containing index.html (use . for repository root)
+        required: true
+        default: .
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-build-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Validate and package static website
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out Build Lab tools
+        uses: actions/checkout@v4
+        with:
+          path: build-lab
+
+      - name: Check out public project source
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.project_repository }}
+          ref: ${{ inputs.project_ref }}
+          path: project-source
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate repository input
+        env:
+          PROJECT_REPOSITORY: ${{ inputs.project_repository }}
+          PROJECT_REF: ${{ inputs.project_ref }}
+          PROJECT_PATH: ${{ inputs.project_path }}
+        run: |
+          python - <<'PY'
+          import os, re
+          repo = os.environ["PROJECT_REPOSITORY"]
+          ref = os.environ["PROJECT_REF"]
+          path = os.environ["PROJECT_PATH"]
+          if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
+              raise SystemExit("Repository must use owner/repository format.")
+          if not ref or len(ref) > 200 or ref.startswith("-") or ".." in ref:
+              raise SystemExit("Invalid branch, tag, or commit reference.")
+          if not path or path.startswith("/") or "\\" in path or ".." in path.split("/"):
+              raise SystemExit("Project path must be a safe relative directory.")
+          PY
+
+      - name: Package static website
+        run: |
+          python build-lab/scripts/package_web.py \
+            --source project-source \
+            --project-path "${{ inputs.project_path }}" \
+            --output build-output/web-project.zip
+
+      - name: Upload downloadable ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-build-lab-web-${{ github.run_number }}
+          path: build-output/web-project.zip
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Write build summary
+        env:
+          PROJECT_REPOSITORY: ${{ inputs.project_repository }}
+          PROJECT_REF: ${{ inputs.project_ref }}
+          PROJECT_PATH: ${{ inputs.project_path }}
+        run: |
+          {
+            echo "## Web package ready"
+            echo ""
+            echo "- Repository: `$PROJECT_REPOSITORY`"
+            echo "- Ref: `$PROJECT_REF`"
+            echo "- Project folder: `$PROJECT_PATH`"
+            echo "- Artifact: `gpt-build-lab-web-${{ github.run_number }}`"
+            echo "- Retention: 7 days"
+            echo ""
+            echo "This workflow packages static files only. It does not execute project scripts."
+          } >> "$GITHUB_STEP_SUMMARY"
