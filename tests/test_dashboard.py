@@ -1,4 +1,4 @@
-"""Regression tests for the GPT Build Lab starter dashboard."""
+"""Regression tests for the GPT Build Lab dashboard."""
 import json
 import unittest
 from html.parser import HTMLParser
@@ -13,8 +13,6 @@ class DashboardAudit(HTMLParser):
     def __init__(self):
         super().__init__()
         self.ids = []
-        self.forms = []
-        self.buttons = []
         self.title = False
         self.lang = None
 
@@ -26,10 +24,6 @@ class DashboardAudit(HTMLParser):
             self.title = True
         if attrs.get("id"):
             self.ids.append(attrs["id"])
-        if tag == "form":
-            self.forms.append(attrs)
-        if tag == "button":
-            self.buttons.append(attrs)
 
 
 class DashboardTests(unittest.TestCase):
@@ -43,12 +37,12 @@ class DashboardTests(unittest.TestCase):
     def test_html_document_has_metadata(self):
         self.assertIn("<!doctype html>", self.html.lower())
         self.assertTrue(self.audit.title)
-        self.assertEqual(self.audit.lang, "en")
+        self.assertEqual(self.audit.lang, "ru")
         self.assertIn('name="viewport"', self.html)
 
     def test_dashboard_has_unique_required_ids(self):
         self.assertEqual(len(self.audit.ids), len(set(self.audit.ids)))
-        for required in ("jobForm", "jobs", "jobCount", "exportAll", "importDrafts", "importFile"):
+        for required in ("jobForm", "jobs", "jobCount", "exportAll", "importDrafts", "importFile", "draftBadge"):
             self.assertIn(required, self.audit.ids)
 
     def test_build_matrix_has_unique_targets(self):
@@ -64,21 +58,22 @@ class DashboardTests(unittest.TestCase):
         targets = {item["id"]: item for item in self.matrix["targets"]}
         self.assertEqual(targets["android-apk"]["status"], "planned")
         self.assertEqual(targets["windows-exe"]["status"], "planned")
-        self.assertEqual(targets["web"]["status"], "prototype")
+        self.assertEqual(targets["web"]["status"], "available")
 
-    def test_dashboard_discloses_no_compilation_yet(self):
-        self.assertIn("does not claim to compile apps yet", self.html)
-        self.assertIn("Cloud compilation:", self.html)
-        self.assertIn("Not connected", self.html)
+    def test_dashboard_discloses_build_scope(self):
+        self.assertIn("Build Engine v0.1", self.html)
+        self.assertIn("APK", self.html)
+        self.assertIn("пока не подключён", self.html)
+        self.assertIn("не запускает сборку", self.html)
 
     def test_json_import_is_bounded_and_validated(self):
-        self.assertIn("file.size > 1024 * 1024", self.html)
-        self.assertIn("incoming.length > 100", self.html)
-        self.assertIn('["web", "android-apk", "windows-exe"]', self.html)
-        self.assertIn('confirm("Import "', self.html)
+        self.assertIn("file.size>1024*1024", self.html)
+        self.assertIn("incoming.length>100", self.html)
+        self.assertIn('["web","android-apk","windows-exe"]', self.html)
+        self.assertIn('confirm("Импортировать "+imported.length', self.html)
 
     def test_dashboard_warns_against_entering_secrets(self):
-        for phrase in ("access tokens", "private keys", "signing keys"):
+        for phrase in ("GitHub", "приватные ключи", "keystore"):
             self.assertIn(phrase, self.html)
 
 
