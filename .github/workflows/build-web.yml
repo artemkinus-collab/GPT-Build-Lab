@@ -21,6 +21,11 @@ on:
         description: Internal Build Lab build UUID (leave empty for manual runs)
         required: false
         type: string
+      project_name:
+        description: Project display name
+        required: false
+        default: Web project
+        type: string
 
 permissions:
   contents: read
