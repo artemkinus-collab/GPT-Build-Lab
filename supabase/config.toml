@@ -1,0 +1,11 @@
+project_id = "gpt-build-lab"
+
+[functions.start-build]
+verify_jwt = true
+
+[functions.build-status]
+verify_jwt = true
+
+# GitHub Actions authenticates this callback with a dedicated shared secret header.
+[functions.build-callback]
+verify_jwt = false
