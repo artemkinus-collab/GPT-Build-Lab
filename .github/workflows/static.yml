@@ -6,6 +6,7 @@ on:
     branches: ["main"]
     paths:
       - "web/**"
+      - "yandex_5966cc9a927df22b.html"
       - ".github/workflows/static.yml"
   workflow_dispatch:
 
@@ -24,10 +25,15 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Prepare website artifact
+        run: |
+          mkdir -p _site
+          cp -a web/. _site/
+          cp yandex_5966cc9a927df22b.html _site/yandex_5966cc9a927df22b.html
       - name: Upload website artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: web
+          path: _site
 
   deploy:
     name: Publish website
