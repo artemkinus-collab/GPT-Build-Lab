@@ -61,6 +61,12 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
 .avatar-choices button.active{border-color:var(--accent);background:var(--soft);box-shadow:0 0 0 2px #9284ed22}
 .account-settings-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0}
 .account-settings-row strong{display:block;font-size:13px}.account-settings-row small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.account-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0;padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--panel2)}
+.account-detail{min-width:0}.account-detail small{display:block;color:var(--muted);font-size:10px}.account-detail strong{display:block;margin-top:4px;font-size:13px;overflow-wrap:anywhere}
+.account-password-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;width:min(440px,100%)}
+.account-password-form .btn{grid-column:1/-1;justify-self:start}
+@media(max-width:650px){.account-password-form{grid-template-columns:1fr}.account-password-form .btn{grid-column:auto}}
+
 @media(max-width:650px){.settings-layout{grid-template-columns:1fr}.settings-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-tab{text-align:center;padding:10px}.account-settings-row{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
@@ -134,9 +140,23 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
     </div></article>
    </section>
    <section class="settings-panel" data-settings-panel="account">
-    <article class="card"><h3>Аккаунт</h3><p class="settings-description">Управление профилем GPT Build Lab.</p>
-     <div class="account-settings-row"><div><strong>Вход и регистрация</strong><small>Отдельная страница авторизации по имени пользователя и паролю.</small></div><a class="btn primary" href="auth.html">Открыть страницу входа</a></div>
-     <div class="auth-note">Серверная авторизация ещё не активирована. Эта страница пока представляет готовый интерфейс, а не настоящую систему учётных записей.</div>
+    <article class="card"><h3>Аккаунт</h3><p class="settings-description">Состояние учётной записи и данные профиля.</p>
+     <div class="status" style="margin:12px 0"><i id="accountStatusDot" class="planned"></i><div><strong id="accountStatusTitle">Проверяем сеанс…</strong><span id="accountStatusText">Получаем состояние авторизации Supabase.</span></div></div>
+     <div class="account-details">
+      <div class="account-detail"><small>Имя пользователя</small><strong id="accountProfileUsername">—</strong></div>
+      <div class="account-detail"><small>Аккаунт создан</small><strong id="accountProfileCreated">—</strong></div>
+     </div>
+     <div class="account-settings-row"><div><strong>Смена пароля</strong><small>Новый пароль должен содержать не менее 8 символов.</small></div>
+      <form id="accountPasswordForm" class="account-password-form">
+       <input id="accountNewPassword" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="Новый пароль" required>
+       <input id="accountConfirmPassword" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="Повтори новый пароль" required>
+       <button class="btn small primary" type="submit">Обновить пароль</button>
+      </form>
+     </div>
+     <div class="account-settings-row"><div><strong>Сеанс</strong><small>Завершить вход на этом устройстве.</small></div><button class="btn small danger" id="accountPanelSignOut" type="button">Выйти из аккаунта</button></div>
+    </article>
+    <article class="card" style="margin-top:14px"><h3>Синхронизация данных</h3>
+     <div class="status"><i class="planned"></i><div><strong>Пока используется локальное хранение</strong><span>Проекты сохраняются в этом браузере. Облачная синхронизация между устройствами ещё не подключена — данные не выдаются за синхронизированные.</span></div></div>
     </article>
    </section>
    <section class="settings-panel" data-settings-panel="data">
@@ -251,17 +271,39 @@ function applyAvatar(){
  const icon=$("accountOpen");if(icon)icon.textContent=value;
  document.querySelectorAll("[data-avatar]").forEach(b=>b.classList.toggle("active",b.dataset.avatar===value));
 }
+let authRefreshVersion=0;
 async function refreshAccount(session){
+ const version=++authRefreshVersion;
  const user=session?.user||null;currentAuthUser=user;
- if(!user){$("accountWrap").hidden=true;$("authOpen").hidden=false;return}
+ if(!user){
+  $("accountWrap").hidden=true;$("authOpen").hidden=false;
+  $("accountMenu").hidden=true;$("accountOpen").setAttribute("aria-expanded","false");
+  $("accountStatusDot").classList.add("planned");
+  $("accountStatusTitle").textContent="Вход не выполнен";
+  $("accountStatusText").textContent="Войди в аккаунт, чтобы управлять профилем.";
+  $("accountProfileUsername").textContent="—";$("accountProfileCreated").textContent="—";
+  return;
+ }
+ $("accountWrap").hidden=false;$("authOpen").hidden=true;
+ $("accountStatusDot").classList.remove("planned");
+ $("accountStatusTitle").textContent="Аккаунт активен";
+ $("accountStatusText").textContent="Сеанс Supabase Auth подтверждён на этом устройстве.";
+ const fallbackName=user.user_metadata?.username||"Пользователь";
+ $("accountMenuName").textContent=fallbackName;
+ $("accountProfileUsername").textContent=fallbackName;
+ $("accountProfileCreated").textContent=dateLabel(user.created_at);
  let profile=null;
  if(gblSupabase){
-  const {data,error}=await gblSupabase.from("profiles").select("username,avatar").eq("id",user.id).maybeSingle();
+  const {data,error}=await gblSupabase.from("profiles").select("username,avatar,created_at").eq("id",user.id).maybeSingle();
+  if(version!==authRefreshVersion)return;
   if(!error)profile=data;
+  else $("accountStatusText").textContent="Сеанс активен. Не удалось загрузить дополнительные данные профиля.";
  }
- const username=profile?.username||user.user_metadata?.username||"Пользователь";
+ if(version!==authRefreshVersion)return;
+ const username=profile?.username||fallbackName;
  $("accountMenuName").textContent=username;
- $("accountWrap").hidden=false;$("authOpen").hidden=true;
+ $("accountProfileUsername").textContent=username;
+ $("accountProfileCreated").textContent=dateLabel(profile?.created_at||user.created_at);
  if(profile?.avatar){prefs.avatar=profile.avatar;savePrefs()}
  applyAvatar();
 }
@@ -283,7 +325,22 @@ function initAccountMenu(){
   const show=menu.hidden;menu.hidden=!show;open.setAttribute("aria-expanded",String(show));
  });
  document.addEventListener("click",e=>{if(!e.target.closest("#accountWrap")){menu.hidden=true;open.setAttribute("aria-expanded","false")}});
- $("accountSettings").addEventListener("click",()=>{menu.hidden=true;goto("settings")});
+ $("accountSettings").addEventListener("click",()=>{menu.hidden=true;goto("settings");document.querySelector('[data-settings-section="account"]').click()});
+ $("accountPanelSignOut").addEventListener("click",()=>$("accountSignOut").click());
+ $("accountPasswordForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  if(!currentAuthUser||!gblSupabase){notify("Сначала войди в аккаунт.");return}
+  const password=$("accountNewPassword").value,confirmation=$("accountConfirmPassword").value;
+  if(password.length<8||password.length>72){notify("Пароль должен содержать от 8 до 72 символов.");return}
+  if(password!==confirmation){notify("Новые пароли не совпадают.");return}
+  const submit=event.currentTarget.querySelector('button[type="submit"]');submit.disabled=true;submit.textContent="Обновляем…";
+  try{
+   const {error}=await gblSupabase.auth.updateUser({password});
+   if(error)throw error;
+   event.currentTarget.reset();notify("Пароль успешно обновлён.");
+  }catch(error){notify("Не удалось обновить пароль: "+(error.message||"ошибка"))}
+  finally{submit.disabled=false;submit.textContent="Обновить пароль"}
+ });
  $("accountSignOut").addEventListener("click",async()=>{
   if(!gblSupabase){notify("Supabase не настроен.");return}
   const {error}=await gblSupabase.auth.signOut();
