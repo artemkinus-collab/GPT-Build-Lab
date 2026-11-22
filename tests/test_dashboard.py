@@ -62,6 +62,16 @@ class DashboardTests(unittest.TestCase):
         self.assertIn('data-avatar="✦"', self.html)
         self.assertIn('data-avatar="⚡"', self.html)
 
+    def test_account_settings_show_live_status_and_secure_password_change(self):
+        for required in ("accountStatusTitle", "accountStatusText", "accountProfileUsername",
+                         "accountProfileCreated", "accountPasswordForm", "accountPanelSignOut"):
+            self.assertIn('id="' + required + '"', self.html)
+        self.assertIn('select("username,avatar,created_at")', self.html)
+        self.assertIn('auth.updateUser({password})', self.html)
+        self.assertIn('authRefreshVersion', self.html)
+        self.assertIn("Пока используется локальное хранение", self.html)
+        self.assertNotIn("Серверная авторизация ещё не активирована", self.html)
+
     def test_dedicated_auth_page_uses_username_and_password(self):
         auth = (ROOT / "web" / "auth.html").read_text(encoding="utf-8")
         self.assertIn('id="username"', auth)
