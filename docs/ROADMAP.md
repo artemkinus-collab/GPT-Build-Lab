@@ -1,58 +1,52 @@
 # GPT Build Lab roadmap
 
-This roadmap separates available features from planned integrations.
+## Phase 1 — Dashboard foundation
 
-## Phase 1 — Foundation
+- [x] Responsive Russian-language dashboard.
+- [x] Local project drafts and JSON import/export.
+- [x] Account sign-in/sign-up interface and Supabase profile integration.
+- [x] Grouped settings and session controls.
+- [x] Fix initial auth visibility and subscribe to auth state changes before loading the session.
+- [x] Move avatar settings into the Account section.
+- [x] Preset avatars, emoji selection, and compressed image upload.
+- [x] CI checks and GitHub Pages publishing.
 
-- [x] Establish project structure and security rules.
-- [x] Build a responsive browser dashboard.
-- [x] Save build-job drafts in browser localStorage.
-- [x] Export and import JSON backups with validation.
-- [x] Add dashboard and packaging regression tests.
-- [x] Check inline JavaScript syntax in CI.
-- [x] Add GitHub Actions validation on push and pull request.
-- [x] Publish the dashboard through GitHub Pages.
+## Phase 2 — Static Web ZIP
 
-## Phase 2 — Static Web packaging
+- [x] Add a dedicated ZIP Builder section to the website.
+- [x] Select multiple files or a project folder.
+- [x] Accept an existing ZIP as input.
+- [x] Validate root-level index.html, paths, secret-like files, file count, and size.
+- [x] Exclude Git metadata, dependencies, and cache folders.
+- [x] Generate and download ZIP locally in the browser without uploading source files.
+- [ ] Test the builder on Android Chrome and desktop browsers with representative projects.
+- [ ] Add optional GitHub repository import without exposing credentials.
 
-- [x] Define supported input: public GitHub repository, ref, and optional project folder.
-- [x] Add a manually-triggered workflow with explicit inputs.
-- [x] Require root-level index.html.
-- [x] Reject symlinks and secret-like files.
-- [x] Apply file-count and uncompressed-size limits.
-- [x] Package static assets into a ZIP artifact.
-- [x] Upload the artifact with a 7-day retention period.
-- [ ] Verify a real test repository end-to-end and record the run result.
+## Phase 3 — Account and project sync
 
-## Phase 2.5 — Accounts and profile settings
+- [x] Supabase Auth username/password integration.
+- [x] Per-user profile with Row Level Security.
+- [x] Expand avatar storage to support compressed images.
+- [ ] Apply the avatar-format migration in the live Supabase project.
+- [ ] Add cloud project CRUD and build history.
+- [ ] Design optional verified email and password recovery (deferred).
 
-- [x] Design Supabase Auth + Postgres account architecture.
-- [x] Add per-user projects/builds schema with Row Level Security.
-- [x] Add authenticated Edge Function to dispatch Web ZIP jobs.
-- [x] Add workflow callbacks for queued build status updates.
-- [ ] Create Supabase project, configure Email + GitHub OAuth, and deploy schema/function.
-- [ ] Configure server-side GitHub/Supabase secrets.
-- [ ] Add sign-in/sign-up UI and connect dashboard project storage.
-- [ ] Show per-user build history and live status refresh.
-- [x] Move avatar settings into the Account section.\n- [x] Add preset avatars, emoji, and compressed image uploads.\n- [ ] Apply the avatar-format migration in the live Supabase project.\n- [ ] Design optional verified email and password recovery (deferred).
-- [ ] Verify full end-to-end flow with a test repository.
-
-## Phase 3 — Android APK pipeline
+## Phase 4 — Android APK pipeline
 
 - [ ] Select supported Android project formats (initially Gradle).
 - [ ] Configure Android SDK and Java versions.
 - [ ] Build debug APK first; add release signing only through protected secrets.
-- [ ] Upload APK and build logs as workflow artifacts.
+- [ ] Upload APK and build logs as artifacts.
 - [ ] Add clear failure diagnostics.
 
-## Phase 4 — Windows EXE pipeline
+## Phase 5 — Windows EXE pipeline
 
 - [ ] Select supported source project formats and toolchains.
 - [ ] Use a Windows hosted runner.
 - [ ] Package output and upload artifacts.
 - [ ] Add tests and build logs.
 
-## Phase 5 — Test Center and deployment
+## Phase 6 — Test Center and deployment
 
 - [ ] Define project-specific test commands.
 - [ ] Collect test reports.
@@ -63,7 +57,6 @@ This roadmap separates available features from planned integrations.
 
 - Never accept arbitrary shell commands from the public dashboard.
 - Never expose GitHub tokens in client-side JavaScript.
-- Do not execute untrusted project scripts in the static packaging workflow.
+- Do not execute untrusted project scripts in the static packaging feature.
 - Keep privileged workflows separate from pull-request validation.
 - Require explicit confirmation for release signing and deployment.
-- Prefer least-privilege workflow permissions.
