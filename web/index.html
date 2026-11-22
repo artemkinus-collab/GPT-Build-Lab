@@ -486,13 +486,13 @@ function isSecretFile(path){
  return [".env",".env.local",".env.production",".npmrc",".pypirc",".netrc","id_rsa","id_ed25519","id_ecdsa","id_dsa","credentials.json","secrets.json","service-account.json","terraform.tfstate"].includes(name)||name.startsWith(".env.")||[".pem",".key",".p12",".pfx",".keystore",".jks"].includes(name.slice(name.lastIndexOf(".")));
 }
 $("loadGitHubProject").addEventListener("click",async()=>{
- const button=$("loadGitHubProject"),result=$("buildResult"),repoValue=$("buildGitHubRepo").value.trim(),ref=$("buildGitHubRef").value.trim()||"main",folder=$("buildGitHubPath").value.trim().replace(/^\\/+|\\/+$/g,"");
- const match=repoValue.match(/^https?:\\/\\/github\\.com\\/([A-Za-z0-9_.-]+)\\/([A-Za-z0-9_.-]+)\\/?(?:\\?.*)?$/i);
+ const button=$("loadGitHubProject"),result=$("buildResult"),repoValue=$("buildGitHubRepo").value.trim(),ref=$("buildGitHubRef").value.trim()||"main",folder=$("buildGitHubPath").value.trim().replace(/^\/+|\/+$/g,"");
+ const match=repoValue.match(/^https?:\/\/github\.com\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)\/?(?:\?.*)?$/i);
  if(!match){notify("Укажи публичную ссылку вида https://github.com/owner/repository");return}
  if(ref.length>200||ref.startsWith("-")||ref.includes("..")){notify("Проверь название ветки или тега.");return}
- if(folder&&(folder.startsWith("/")||folder.includes("\\\\")||folder.split("/").some(x=>!x||x==="."||x===".."))){notify("Укажи безопасный относительный путь к папке.");return}
+ if(folder&&(folder.startsWith("/")||folder.includes("\\")||folder.split("/").some(x=>!x||x==="."||x===".."))){notify("Укажи безопасный относительный путь к папке.");return}
  if(!window.JSZip){notify("ZIP-библиотека ещё не загрузилась.");return}
- const owner=match[1],repository=match[2].replace(/\\.git$/i,"");
+ const owner=match[1],repository=match[2].replace(/\.git$/i,"");
  button.disabled=true;button.textContent="Получаем список файлов…";result.className="build-result";result.textContent="Подключаемся к GitHub…";
  try{
   const treeUrl="https://api.github.com/repos/"+encodeURIComponent(owner)+"/"+encodeURIComponent(repository)+"/git/trees/"+ref.split("/").map(encodeURIComponent).join("/")+"?recursive=1";
