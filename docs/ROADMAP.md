@@ -24,7 +24,7 @@ This roadmap separates available features from planned integrations.
 - [x] Upload the artifact with a 7-day retention period.
 - [ ] Verify a real test repository end-to-end and record the run result.
 
-## Phase 2.5 — Accounts and dashboard-triggered Web builds
+## Phase 2.5 — Accounts and profile settings
 
 - [x] Design Supabase Auth + Postgres account architecture.
 - [x] Add per-user projects/builds schema with Row Level Security.
@@ -34,7 +34,7 @@ This roadmap separates available features from planned integrations.
 - [ ] Configure server-side GitHub/Supabase secrets.
 - [ ] Add sign-in/sign-up UI and connect dashboard project storage.
 - [ ] Show per-user build history and live status refresh.
-- [ ] Provide authenticated artifact download from the dashboard.
+- [x] Move avatar settings into the Account section.\n- [x] Add preset avatars, emoji, and compressed image uploads.\n- [ ] Apply the avatar-format migration in the live Supabase project.\n- [ ] Design optional verified email and password recovery (deferred).
 - [ ] Verify full end-to-end flow with a test repository.
 
 ## Phase 3 — Android APK pipeline
