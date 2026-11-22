@@ -8,7 +8,7 @@ const allowedOrigins = new Set([
 
 const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
+  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, x-supabase-api-version",
   "Vary": "Origin",
 };
 
