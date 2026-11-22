@@ -55,8 +55,8 @@ Deno.serve(async (req) => {
   const ip = req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip");
   if (!ip) return json({ error: "Не удалось проверить источник запроса. Попробуй позже." }, 503, origin);
 
-  const supabaseUrl = Deno.env.get("https://owwyewsgtauztkoiicvu.supabase.co/functions/v1/username-signup");
-  const serviceRoleKey = Deno.env.get("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93d3lld3NndGF1enRrb2lpY3Z1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NTI4MjQ5MywiZXhwIjoyMTEwODU4NDkzfQ.q_LArQYsDT8YC16R2fu24z9VSgMyhwklAsHSOjN2ZkI");
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !serviceRoleKey) {
     return json({ error: "Сервер регистрации ещё не настроен администратором." }, 503, origin);
   }
