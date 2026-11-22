@@ -6,18 +6,23 @@
 - Identity and database: Supabase Auth + Postgres.
 - Sign-in: username/password via Supabase Auth. Public signup uses the username-signup Edge Function; the synthetic internal email is not a recovery address.
 - User-facing static Web ZIP packaging: JSZip in the browser.
+- Public GitHub repository import: GitHub tree API + raw.githubusercontent.com, fetched directly by the browser.
 - CI and Pages deployment: GitHub Actions.
-- Legacy cloud build path: create-web-build Edge Function + build-web.yml. It is not required for the website ZIP builder.
+- Legacy cloud build path: create-web-build Edge Function + build-web.yml. It is not required for user-facing ZIP packaging.
 
 ## Browser ZIP lifecycle
 
-1. The user selects project files, a folder, or a ZIP archive.
-2. The browser checks paths, root index.html, secret-like filenames, file count, and total size.
-3. Git metadata, dependency folders, and caches are excluded.
-4. JSZip generates the archive locally and the browser downloads it.
-5. Source files are not uploaded to Supabase or GitHub; project scripts are never executed.
+The user can:
+1. Select local files, a folder, or an existing ZIP archive; or
+2. Enter a public GitHub repository URL, branch/tag, and optional project subfolder.
+3. For GitHub imports, the browser reads the repository tree through the public GitHub API and fetches file contents from raw.githubusercontent.com. Private repositories are not supported; no GitHub token is stored in the frontend.
+4. The browser validates paths, root index.html, secret-like filenames, file count, and total size.
+5. Git metadata, dependency folders, and caches are excluded.
+6. JSZip generates the archive locally and the browser downloads it.
 
-Limits: 10,000 files and 100 MiB of source/unpacked data. This is static packaging, not a framework build system.
+Selected local files and imported GitHub source files are not uploaded to Supabase or to a Build Lab server. Project scripts are never executed.
+
+Limits: 10,000 files and 100 MiB of source/unpacked data. GitHub public API rate limits and browser CORS/network availability apply. This is static packaging, not a framework build system.
 
 ## Profile avatars
 
