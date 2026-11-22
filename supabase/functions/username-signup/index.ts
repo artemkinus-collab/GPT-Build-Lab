@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
   const ip = req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip");
   if (!ip) return json({ error: "Не удалось проверить источник запроса. Попробуй позже." }, 503, origin);
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseUrl = Deno.env.get("https://owwyewsgtauztkoiicvu.supabase.co/functions/v1/username-signup");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !serviceRoleKey) {
     return json({ error: "Сервер регистрации ещё не настроен администратором." }, 503, origin);
