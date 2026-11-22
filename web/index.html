@@ -68,6 +68,37 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
 @media(max-width:650px){.account-password-form{grid-template-columns:1fr}.account-password-form .btn{grid-column:auto}}
 
 @media(max-width:650px){.settings-layout{grid-template-columns:1fr}.settings-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-tab{text-align:center;padding:10px}.account-settings-row{align-items:flex-start;flex-direction:column}}
+
+.avatar-editor{display:grid;grid-template-columns:86px minmax(0,1fr);gap:16px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}
+.avatar-preview{width:76px;height:76px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(145deg,#8878ef,#65c6d7);color:white;font-size:36px;box-shadow:0 9px 24px #7668df30;overflow:hidden}
+.avatar-preview img,.account-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar-editor-main{min-width:0}.avatar-editor-main>strong{display:block;font-size:13px}.avatar-editor-main>small,.avatar-hint{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.avatar-group-title{font-size:10px;font-weight:800;color:var(--muted);margin:13px 0 7px}
+.avatar-choices button{width:38px;height:38px;border-radius:13px}
+.avatar-choices .avatar-choice{font-size:19px;color:white;border:2px solid transparent;box-shadow:inset 0 0 0 1px #ffffff40}
+.avatar-choice.preset-violet{background:linear-gradient(145deg,#9677f5,#6148c8)}
+.avatar-choice.preset-blue{background:linear-gradient(145deg,#62c8e8,#3976ce)}
+.avatar-choice.preset-orange{background:linear-gradient(145deg,#ffc36d,#e87945)}
+.avatar-choice.preset-green{background:linear-gradient(145deg,#79d6b2,#319b82)}
+.avatar-choice.preset-pink{background:linear-gradient(145deg,#f69bc8,#a45bd2)}
+.avatar-choice.preset-cyan{background:linear-gradient(145deg,#7ce1df,#398caa)}
+.avatar-choices button.active{outline:3px solid #988bf0;outline-offset:2px}
+.avatar-upload{margin-top:13px;cursor:pointer}.avatar-hint{margin-top:6px}
+.build-card{padding:clamp(16px,3vw,25px)}
+.build-step{display:flex;gap:12px;align-items:flex-start;margin:5px 0 14px}
+.build-step>span{width:28px;height:28px;flex:none;display:grid;place-items:center;border-radius:9px;background:var(--soft);color:var(--accent);font-weight:850}
+.build-step strong{display:block;font-size:13px}.build-step small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.build-pickers,.build-actions{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 17px}
+.build-pickers label{cursor:pointer}
+.build-file-summary{padding:13px;border:1px dashed var(--line);border-radius:13px;background:var(--panel2);color:var(--muted);font-size:12px;margin-bottom:20px;overflow-wrap:anywhere}
+.build-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 16px}
+.build-options label{display:grid;gap:6px;font-size:11px;font-weight:700;color:var(--muted)}
+.build-progress{height:8px;background:var(--soft);border-radius:20px;overflow:hidden;margin:12px 0}
+.build-progress-bar{height:100%;width:0;background:linear-gradient(90deg,#7668df,#68c7d5);transition:width .15s}
+.build-result{padding:12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.build-result.success{border-color:#29996c66;color:var(--green)}.build-result.error{border-color:#d85e6a66;color:var(--red)}
+@media(max-width:520px){.avatar-editor{grid-template-columns:1fr}.avatar-preview{width:68px;height:68px}.build-options{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -75,7 +106,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
 <header>
  <div class="brand"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.8 14.6 9.4 21.2 12l-6.6 2.6L12 21.2l-2.6-6.6L2.8 12l6.6-2.6L12 2.8Z"/><path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8L19 2Z"/></svg></div><div><h1>GPT Build Lab</h1><small>Лаборатория проектов</small></div></div>
  <div class="header-actions">
-  <a class="btn primary" id="authOpen" href="auth.html">Войти</a>
+  <a class="btn primary" id="authOpen" href="auth.html" hidden>Войти</a>
   <div class="account-wrap" id="accountWrap" hidden>
    <button class="account-avatar" id="accountOpen" type="button" aria-label="Меню аккаунта" aria-expanded="false">✦</button>
    <div class="account-menu" id="accountMenu" hidden>
@@ -88,6 +119,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
 </header>
 <nav aria-label="Основная навигация">
  <button class="navbtn active" data-page="home">Главная</button>
+ <button class="navbtn" data-page="builder">ZIP-сборка</button>
  <button class="navbtn" data-page="drafts">Проекты <span id="navDraftCount"></span></button>
  <button class="navbtn" data-page="statistics">Статистика</button>
  <button class="navbtn" data-page="github">GitHub</button>
@@ -108,6 +140,28 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
  </div>
 </section>
 
+<section class="page" id="page-builder">
+ <div class="section-title"><div><h2>ZIP-сборка</h2><p>Собери ZIP-архив проекта прямо здесь — без GitHub Actions и публикации исходников на сервере.</p></div></div>
+ <article class="card build-card">
+  <div class="build-step"><span>1</span><div><strong>Добавь файлы проекта</strong><small>Выбери несколько файлов или целую папку. Сборка выполняется в браузере на этом устройстве.</small></div></div>
+  <div class="build-pickers">
+   <label class="btn primary" for="buildFiles">Выбрать файлы</label>
+   <label class="btn" for="buildFolder">Выбрать папку</label>
+   <input id="buildFiles" type="file" multiple hidden>
+   <input id="buildFolder" type="file" webkitdirectory directory multiple hidden>
+  </div>
+  <div class="build-file-summary" id="buildFileSummary">Файлы ещё не выбраны.</div>
+  <div class="build-step"><span>2</span><div><strong>Проверь содержимое</strong><small>Для веб-проекта нужен index.html в корне. Секретные файлы блокируются, служебные каталоги исключаются.</small></div></div>
+  <div class="build-options">
+   <label>Имя ZIP-файла<input id="buildZipName" maxlength="64" value="my-project" placeholder="my-project"></label>
+   <label>Тип сборки<select id="buildKind"><option value="web">Статический веб-проект</option></select></label>
+  </div>
+  <div class="build-progress" id="buildProgress" hidden><div class="build-progress-bar" id="buildProgressBar"></div></div>
+  <div class="build-actions"><button class="btn primary" id="buildZip" type="button" disabled>Собрать ZIP</button><button class="btn" id="clearBuildFiles" type="button" disabled>Очистить список</button></div>
+  <div class="build-result" id="buildResult" role="status">Ограничения: до 10 000 файлов и 100 МБ исходных данных. Файлы не отправляются на сервер.</div>
+ </article>
+ <article class="card" style="margin-top:14px"><h3 style="margin:0 0 8px">Что входит в архив</h3><p class="settings-description">В ZIP попадут файлы проекта с сохранением структуры папок. Каталоги .git, .github, node_modules и кэши не включаются. Файлы .env, ключи, сертификаты и другие потенциальные секреты останавливают сборку.</p></article>
+</section>
 <section class="page" id="page-statistics">
  <div class="section-title"><div><h2>Статистика</h2><p>Показатели рассчитываются из твоих сохранённых проектов в этом браузере.</p></div></div>
  <div class="grid">
@@ -134,9 +188,6 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
    <section class="settings-panel active" data-settings-panel="appearance">
     <article class="card"><h3>Внешний вид сайта</h3><div class="settings-list">
      <div class="setting"><div><strong>Тёмная тема</strong><small>Переключить оформление сайта</small></div><input class="switch" type="checkbox" id="darkMode" aria-label="Тёмная тема"></div>
-     <div class="setting"><div><strong>Иконка аккаунта</strong><small>Выбери значок, который будет отображаться в шапке после входа.</small><div class="avatar-choices" id="avatarChoices">
-      <button type="button" data-avatar="✦" aria-label="Звезда">✦</button><button type="button" data-avatar="◈" aria-label="Кристалл">◈</button><button type="button" data-avatar="●" aria-label="Круг">●</button><button type="button" data-avatar="⚡" aria-label="Молния">⚡</button><button type="button" data-avatar="❋" aria-label="Цветок">❋</button>
-     </div></div></div>
     </div></article>
    </section>
    <section class="settings-panel" data-settings-panel="account">
@@ -145,6 +196,29 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
      <div class="account-details">
       <div class="account-detail"><small>Имя пользователя</small><strong id="accountProfileUsername">—</strong></div>
       <div class="account-detail"><small>Аккаунт создан</small><strong id="accountProfileCreated">—</strong></div>
+     </div>
+     <div class="avatar-editor">
+      <div class="avatar-preview" id="avatarPreview">✦</div>
+      <div class="avatar-editor-main">
+       <strong>Аватар профиля</strong>
+       <small>Выбери готовый вариант, эмодзи или загрузи собственное изображение. Аватар синхронизируется с профилем после входа.</small>
+       <div class="avatar-group-title">Готовые аватары</div>
+       <div class="avatar-choices" id="avatarChoices">
+        <button type="button" class="avatar-choice preset-violet" data-avatar="✦" aria-label="Звезда">✦</button>
+        <button type="button" class="avatar-choice preset-blue" data-avatar="◈" aria-label="Кристалл">◈</button>
+        <button type="button" class="avatar-choice preset-orange" data-avatar="⚡" aria-label="Молния">⚡</button>
+        <button type="button" class="avatar-choice preset-green" data-avatar="❋" aria-label="Цветок">❋</button>
+        <button type="button" class="avatar-choice preset-pink" data-avatar="☾" aria-label="Луна">☾</button>
+        <button type="button" class="avatar-choice preset-cyan" data-avatar="狐" aria-label="Лис">狐</button>
+       </div>
+       <div class="avatar-group-title">Эмодзи</div>
+       <div class="avatar-choices emoji-choices">
+        <button type="button" data-avatar="🐱" aria-label="Кот">🐱</button><button type="button" data-avatar="🐼" aria-label="Панда">🐼</button><button type="button" data-avatar="🐸" aria-label="Лягушка">🐸</button><button type="button" data-avatar="🚀" aria-label="Ракета">🚀</button><button type="button" data-avatar="🎮" aria-label="Геймпад">🎮</button><button type="button" data-avatar="🌙" aria-label="Луна">🌙</button><button type="button" data-avatar="🦊" aria-label="Лиса">🦊</button><button type="button" data-avatar="💎" aria-label="Алмаз">💎</button>
+       </div>
+       <label class="btn small avatar-upload" for="avatarUpload">Загрузить изображение</label>
+       <input id="avatarUpload" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+       <small class="avatar-hint">PNG, JPG или WebP. Изображение автоматически уменьшается до 128×128.</small>
+      </div>
      </div>
      <div class="account-settings-row"><div><strong>Смена пароля</strong><small>Новый пароль должен содержать не менее 8 символов.</small></div>
       <form id="accountPasswordForm" class="account-password-form">
@@ -181,7 +255,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
  <div class="link-grid">
   <a class="link-card" href="https://github.com/artemkinus-collab/GPT-Build-Lab" target="_blank" rel="noopener"><span class="link-icon">⌘</span><span><strong>Репозиторий проекта</strong><small>Исходный код и файлы лаборатории ↗</small></span></a>
   <a class="link-card" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions" target="_blank" rel="noopener"><span class="link-icon">▶</span><span><strong>GitHub Actions</strong><small>Результаты автоматических проверок ↗</small></span></a>
-  <a class="link-card" href="https://github.com/artemkinus-collab/GPT-Build-Lab/actions/workflows/build-web.yml" target="_blank" rel="noopener"><span class="link-icon">⇧</span><span><strong>Сценарий упаковки сайта</strong><small>Ручной запуск облачного ZIP-процесса ↗</small></span></a>
+  
   <a class="link-card" href="https://github.com/artemkinus-collab/GPT-Build-Lab/blob/main/docs/ROADMAP.md" target="_blank" rel="noopener"><span class="link-icon">☷</span><span><strong>План развития</strong><small>Текущие задачи и будущие функции ↗</small></span></a>
  </div>
  <article class="card" style="margin-top:14px"><h2 style="font-size:16px;margin:0">Связь с GitHub</h2><p class="caption">Сайт пока не имеет собственного авторизованного подключения к GitHub API. Поэтому кнопки выше открывают соответствующие страницы GitHub, а не имитируют запуск сборки внутри сайта.</p></article>
@@ -200,10 +274,10 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
   <div class="status"><i></i><div><strong>Локальное хранение</strong><span>Проекты сохраняются в localStorage и остаются после перезагрузки этого браузера.</span></div></div>
   <div class="status"><i></i><div><strong>Импорт и экспорт JSON</strong><span>Резервное копирование и перенос проектов между браузерами вручную.</span></div></div>
   <div class="status"><i></i><div><strong>Автоматическая проверка кода лаборатории</strong><span>GitHub Actions запускает тесты проекта при обновлениях репозитория.</span></div></div>
-  <div class="status"><i></i><div><strong>Упаковка статических сайтов</strong><span>Отдельный GitHub Actions workflow может собрать ZIP из открытого репозитория по ручному запуску.</span></div></div>
+  <div class="status"><i></i><div><strong>ZIP-сборка в браузере</strong><span>Выбор файлов или папки, проверка структуры и создание ZIP прямо на сайте без загрузки исходников на сервер.</span></div></div>
  </div></article>
  <article class="card" style="margin-top:14px"><h3 style="margin:0;font-size:15px">Пока не реализовано</h3><div class="status-list">
-  <div class="status"><i class="planned"></i><div><strong>Запуск сборки непосредственно на сайте</strong><span>Нет серверного API и авторизации, поэтому сайт не может запускать workflow от имени пользователя.</span></div></div>
+  <div class="status"><i class="planned"></i><div><strong>APK и EXE-сборка</strong><span>Пока не подключены Android SDK и Windows-среда сборки. ZIP-пакетирование веб-проектов уже доступно на сайте.</span></div></div>
   <div class="status"><i class="planned"></i><div><strong>Сборка APK и EXE</strong><span>Эти сборочные среды ещё не подключены.</span></div></div>
   <div class="status"><i class="planned"></i><div><strong>Синхронизация проектов между устройствами</strong><span>Проекты пока хранятся только в браузере, где были созданы.</span></div></div>
  </div></article>
@@ -230,6 +304,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
 <input type="file" id="importFile" accept=".json,application/json" hidden>
 <div class="toast" id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="./supabase-config.js"></script>
 <script>
 (()=>{
@@ -268,7 +343,10 @@ function initSettingsSections(){
 }
 function applyAvatar(){
  const value=prefs.avatar||"✦";
- const icon=$("accountOpen");if(icon)icon.textContent=value;
+ const icon=$("accountOpen"),preview=$("avatarPreview");
+ const image=typeof value==="string"&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value)&&value.length<=160000;
+ if(icon)icon.innerHTML=image?'<img alt="" src="'+value+'">':escapeHTML(value);
+ if(preview)preview.innerHTML=image?'<img alt="Предпросмотр аватара" src="'+value+'">':escapeHTML(value);
  document.querySelectorAll("[data-avatar]").forEach(b=>b.classList.toggle("active",b.dataset.avatar===value));
 }
 let authRefreshVersion=0;
@@ -308,15 +386,18 @@ async function refreshAccount(session){
  applyAvatar();
 }
 async function initAuth(){
- if(!gblSupabase)return;
+ if(!gblSupabase){$("authOpen").hidden=false;$("accountWrap").hidden=true;$("accountStatusTitle").textContent="Авторизация недоступна";$("accountStatusText").textContent="Проверь подключение Supabase.";return}
+ const {data:{subscription}}=gblSupabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>refreshAccount(session),0)});
  try{
   const {data,error}=await gblSupabase.auth.getSession();
   if(error)throw error;
   await refreshAccount(data.session);
-  gblSupabase.auth.onAuthStateChange((_event,session)=>{
-   setTimeout(()=>refreshAccount(session),0);
-  });
- }catch(error){notify("Не удалось проверить сеанс аккаунта: "+(error.message||"ошибка"))}
+ }catch(error){
+  $("accountWrap").hidden=true;$("authOpen").hidden=false;
+  $("accountStatusTitle").textContent="Не удалось проверить сеанс";
+  $("accountStatusText").textContent="Проверь подключение и обнови страницу.";
+  notify("Не удалось проверить сеанс аккаунта: "+(error.message||"ошибка"));
+ }
 }
 function initAccountMenu(){
  const open=$("accountOpen"),menu=$("accountMenu");
@@ -348,15 +429,81 @@ function initAccountMenu(){
   menu.hidden=true;open.setAttribute("aria-expanded","false");notify("Вы вышли из аккаунта.");
  });
 }
-document.querySelectorAll("[data-avatar]").forEach(button=>button.addEventListener("click",async()=>{
- const avatar=button.dataset.avatar;
+async function saveAvatarValue(avatar){
+ if(typeof avatar!=="string"||avatar.length>160000)return notify("Аватар слишком большой или имеет неподдерживаемый формат.");
  if(currentAuthUser&&gblSupabase){
   const {error}=await gblSupabase.from("profiles").update({avatar}).eq("id",currentAuthUser.id);
-  if(error){notify("Не удалось сохранить аватар в профиле: "+error.message);return}
+  if(error){notify("Не удалось сохранить аватар профиля: "+error.message);return}
  }
- prefs.avatar=avatar;savePrefs();applyAvatar();notify(currentAuthUser?"Аватар профиля обновлён.":"Иконка сохранена локально. Войди, чтобы привязать её к аккаунту.");
-}));
+ prefs.avatar=avatar;savePrefs();applyAvatar();
+ notify(currentAuthUser?"Аватар профиля сохранён.":"Аватар сохранён на этом устройстве. Войди, чтобы привязать его к профилю.");
+}
+document.querySelectorAll("[data-avatar]").forEach(button=>button.addEventListener("click",()=>saveAvatarValue(button.dataset.avatar)));
+$("avatarUpload").addEventListener("change",async()=>{
+ const file=$("avatarUpload").files?.[0];if(!file)return;
+ if(!/^image\/(png|jpeg|webp)$/.test(file.type)){notify("Выбери изображение PNG, JPG или WebP.");return}
+ if(file.size>8*1024*1024){notify("Исходное изображение должно быть меньше 8 МБ.");return}
+ try{
+  const image=await createImageBitmap(file),canvas=document.createElement("canvas");canvas.width=128;canvas.height=128;
+  const ctx=canvas.getContext("2d");const side=Math.min(image.width,image.height),sx=(image.width-side)/2,sy=(image.height-side)/2;
+  ctx.drawImage(image,sx,sy,side,side,0,0,128,128);image.close?.();
+  const data=canvas.toDataURL("image/jpeg",0.78);
+  if(data.length>150000)throw Error("Не удалось достаточно сжать изображение.");
+  await saveAvatarValue(data);
+ }catch(error){notify("Не удалось обработать изображение: "+(error.message||"ошибка"))}
+ finally{$("avatarUpload").value=""}
+});
 initSettingsSections();applyAvatar();initAccountMenu();
+
+const buildState={files:[],rootPrefix:""};
+function setBuildFiles(fileList){
+ const all=Array.from(fileList||[]);buildState.files=all;
+ const summary=$("buildFileSummary");
+ if(!all.length){summary.textContent="Файлы ещё не выбраны.";$("buildZip").disabled=true;$("clearBuildFiles").disabled=true;return}
+ const total=all.reduce((n,f)=>n+f.size,0);
+ summary.textContent=all.length+" файлов · "+(total/1024/1024).toFixed(2)+" МБ · "+(all[0].webkitRelativePath?"папка выбрана":"отдельные файлы выбраны");
+ $("buildZip").disabled=false;$("clearBuildFiles").disabled=false;
+}
+$("buildFiles").addEventListener("change",e=>setBuildFiles(e.target.files));
+$("buildFolder").addEventListener("change",e=>setBuildFiles(e.target.files));
+$("clearBuildFiles").addEventListener("click",()=>{buildState.files=[];$("buildFiles").value="";$("buildFolder").value="";setBuildFiles([]);$("buildResult").className="build-result";$("buildResult").textContent="Список файлов очищен."});
+function buildPath(file){
+ let path=file.webkitRelativePath||file.name;
+ path=path.replace(/\\/g,"/").replace(/^\/+|\/+$/g,"");
+ const parts=path.split("/");
+ if(parts.some(p=>!p||p==="."||p===".."||p.includes("\\")||p.includes(":")))throw Error("Обнаружен небезопасный путь файла: "+path);
+ return path;
+}
+function isSecretFile(path){
+ const name=path.split("/").pop().toLowerCase();
+ return [".env",".env.local",".env.production",".npmrc",".pypirc",".netrc","id_rsa","id_ed25519","id_ecdsa","id_dsa","credentials.json","secrets.json","service-account.json","terraform.tfstate"].includes(name)||name.startsWith(".env.")||[".pem",".key",".p12",".pfx",".keystore",".jks"].includes(name.slice(name.lastIndexOf(".")));
+}
+$("buildZip").addEventListener("click",async()=>{
+ if(!window.JSZip){$("buildResult").className="build-result error";$("buildResult").textContent="Библиотека ZIP не загрузилась. Обнови страницу при подключённом интернете.";return}
+ const files=buildState.files;if(!files.length)return;
+ const button=$("buildZip"),result=$("buildResult"),progress=$("buildProgress"),bar=$("buildProgressBar");
+ button.disabled=true;$("clearBuildFiles").disabled=true;progress.hidden=false;bar.style.width="4%";result.className="build-result";result.textContent="Проверяем файлы…";
+ try{
+  if(files.length>10000)throw Error("В проекте больше 10 000 файлов.");
+  const total=files.reduce((n,f)=>n+f.size,0);if(total>100*1024*1024)throw Error("Размер проекта превышает 100 МБ.");
+  let entries=files.map(file=>({file,path:buildPath(file)}));
+  const first=entries[0].path.split("/")[0];
+  if(entries.every(x=>x.path.startsWith(first+"/"))&&entries.some(x=>x.path===first+"/index.html"))entries=entries.map(x=>({...x,path:x.path.slice(first.length+1)}));
+  const excluded=new Set([".git",".github",".ssh",".aws",".azure",".terraform","node_modules",".venv","venv","__pycache__",".next",".cache"]);
+  entries=entries.filter(x=>!x.path.split("/").some(part=>excluded.has(part)));
+  const secret=entries.find(x=>isSecretFile(x.path));if(secret)throw Error("Потенциальный секретный файл: "+secret.path+". Удали его из проекта перед сборкой.");
+  if(!entries.some(x=>x.path==="index.html"))throw Error("Не найден index.html в корне. Выбери папку, где находится главная страница.");
+  if(!entries.length)throw Error("После проверки не осталось файлов для архива.");
+  const zip=new JSZip();for(const item of entries)zip.file(item.path,item.file);
+  result.textContent="Создаём архив из "+entries.length+" файлов…";bar.style.width="30%";
+  const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6},streamFiles:true},meta=>{bar.style.width=(30+Math.round(meta.percent*.65))+"%"});
+  const raw=$("buildZipName").value.trim().replace(/[^a-zA-Z0-9а-яА-ЯёЁ_.-]+/g,"-").replace(/^[-.]+|[-.]+$/g,"").slice(0,64)||"my-project";
+  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=raw.toLowerCase().endsWith(".zip")?raw:raw+".zip";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+  bar.style.width="100%";result.className="build-result success";result.textContent="Готово! Архив "+a.download+" создан: "+entries.length+" файлов, "+(blob.size/1024/1024).toFixed(2)+" МБ. Архив скачивается на устройство.";
+ }catch(error){result.className="build-result error";result.textContent="Сборка остановлена: "+(error.message||"неизвестная ошибка");bar.style.width="0%"}
+ finally{button.disabled=!buildState.files.length;$("clearBuildFiles").disabled=!buildState.files.length;setTimeout(()=>{progress.hidden=true},1200)}
+});
+
 function render(){
 $("homeTotal").textContent=projects.length;$("homeWeb").textContent=count("web");$("homeRecent").textContent=weekCount();
 $("statTotal").textContent=projects.length;$("statWeb").textContent=count("web");$("statAndroid").textContent=count("android-apk");$("statWindows").textContent=count("windows-exe");$("statWeek").textContent=weekCount();$("statRemaining").textContent=Math.max(0,100-projects.length);
