@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
   if (!ip) return json({ error: "Не удалось проверить источник запроса. Попробуй позже." }, 503, origin);
 
   const supabaseUrl = Deno.env.get("https://owwyewsgtauztkoiicvu.supabase.co/functions/v1/username-signup");
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const serviceRoleKey = Deno.env.get("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93d3lld3NndGF1enRrb2lpY3Z1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NTI4MjQ5MywiZXhwIjoyMTEwODU4NDkzfQ.q_LArQYsDT8YC16R2fu24z9VSgMyhwklAsHSOjN2ZkI");
   if (!supabaseUrl || !serviceRoleKey) {
     return json({ error: "Сервер регистрации ещё не настроен администратором." }, 503, origin);
   }
