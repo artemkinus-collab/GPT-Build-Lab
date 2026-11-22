@@ -92,7 +92,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
 .build-pickers label{cursor:pointer}
 .build-file-summary{padding:13px;border:1px dashed var(--line);border-radius:13px;background:var(--panel2);color:var(--muted);font-size:12px;margin-bottom:20px;overflow-wrap:anywhere}
 .build-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 16px}
-.build-options label{display:grid;gap:6px;font-size:11px;font-weight:700;color:var(--muted)}
+.build-options label{display:grid;gap:6px;font-size:11px;font-weight:700;color:var(--muted)}.build-kind-label{display:grid;align-content:start;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);font-size:11px;color:var(--muted)}.build-kind-label strong{font-size:12px;color:var(--ink)}.build-kind-label small{font-size:10px}
 .build-progress{height:8px;background:var(--soft);border-radius:20px;overflow:hidden;margin:12px 0}
 .build-progress-bar{height:100%;width:0;background:linear-gradient(90deg,#7668df,#68c7d5);transition:width .15s}
 .build-result{padding:12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:11px;color:var(--muted);overflow-wrap:anywhere}
@@ -161,7 +161,7 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
   <div class="build-step"><span>2</span><div><strong>Проверь содержимое</strong><small>Для веб-проекта нужен index.html в корне. Секретные файлы блокируются, служебные каталоги исключаются.</small></div></div>
   <div class="build-options">
    <label>Имя ZIP-файла<input id="buildZipName" maxlength="64" value="my-project" placeholder="my-project"></label>
-   <label>Тип сборки<select id="buildKind"><option value="web">Статический веб-проект</option></select></label>
+   <div class="build-kind-label"><span>Тип сборки</span><strong>Статический веб-проект</strong><small>Другие типы появятся после подключения отдельных сборочных сред.</small></div>
   </div>
   <div class="build-progress" id="buildProgress" hidden><div class="build-progress-bar" id="buildProgressBar"></div></div>
   <div class="build-actions"><button class="btn primary" id="buildZip" type="button" disabled>Собрать ZIP</button><button class="btn" id="clearBuildFiles" type="button" disabled>Очистить список</button></div>
