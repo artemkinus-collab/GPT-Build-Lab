@@ -143,11 +143,11 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
 <section class="page" id="page-builder">
  <div class="section-title"><div><h2>ZIP-сборка</h2><p>Собери ZIP-архив проекта прямо здесь — без GitHub Actions и публикации исходников на сервере.</p></div></div>
  <article class="card build-card">
-  <div class="build-step"><span>1</span><div><strong>Добавь файлы проекта</strong><small>Выбери несколько файлов или целую папку. Сборка выполняется в браузере на этом устройстве.</small></div></div>
+  <div class="build-step"><span>1</span><div><strong>Добавь файлы проекта</strong><small>Выбери несколько файлов, целую папку или готовый ZIP-архив. Сборка выполняется в браузере на этом устройстве.</small></div></div>
   <div class="build-pickers">
    <label class="btn primary" for="buildFiles">Выбрать файлы</label>
    <label class="btn" for="buildFolder">Выбрать папку</label>
-   <input id="buildFiles" type="file" multiple hidden>
+   <input id="buildFiles" type="file" multiple accept=".zip,*/*" hidden>
    <input id="buildFolder" type="file" webkitdirectory directory multiple hidden>
   </div>
   <div class="build-file-summary" id="buildFileSummary">Файлы ещё не выбраны.</div>
@@ -486,15 +486,19 @@ $("buildZip").addEventListener("click",async()=>{
  try{
   if(files.length>10000)throw Error("В проекте больше 10 000 файлов.");
   const total=files.reduce((n,f)=>n+f.size,0);if(total>100*1024*1024)throw Error("Размер проекта превышает 100 МБ.");
-  let entries=files.map(file=>({file,path:buildPath(file)}));
-  const first=entries[0].path.split("/")[0];
-  if(entries.every(x=>x.path.startsWith(first+"/"))&&entries.some(x=>x.path===first+"/index.html"))entries=entries.map(x=>({...x,path:x.path.slice(first.length+1)}));
+  let entries=[];
+  if(files.length===1&&/\\.zip$/i.test(files[0].name)){
+   const sourceZip=await JSZip.loadAsync(files[0]);
+   entries=Object.values(sourceZip.files).filter(entry=>!entry.dir).map(entry=>({entry,path:entry.name}));
+  }else entries=files.map(file=>({file,path:buildPath(file)}));
+  const first=entries[0]?.path.split("/")[0];
+  if(first&&entries.every(x=>x.path.startsWith(first+"/"))&&entries.some(x=>x.path===first+"/index.html"))entries=entries.map(x=>({...x,path:x.path.slice(first.length+1)}));
   const excluded=new Set([".git",".github",".ssh",".aws",".azure",".terraform","node_modules",".venv","venv","__pycache__",".next",".cache"]);
   entries=entries.filter(x=>!x.path.split("/").some(part=>excluded.has(part)));
   const secret=entries.find(x=>isSecretFile(x.path));if(secret)throw Error("Потенциальный секретный файл: "+secret.path+". Удали его из проекта перед сборкой.");
-  if(!entries.some(x=>x.path==="index.html"))throw Error("Не найден index.html в корне. Выбери папку, где находится главная страница.");
+  if(!entries.some(x=>x.path==="index.html"))throw Error("Не найден index.html в корне. Выбери папку или ZIP, где находится главная страница.");
   if(!entries.length)throw Error("После проверки не осталось файлов для архива.");
-  const zip=new JSZip();for(const item of entries)zip.file(item.path,item.file);
+  const zip=new JSZip();for(const item of entries)zip.file(item.path,item.file||item.entry.async("uint8array"));
   result.textContent="Создаём архив из "+entries.length+" файлов…";bar.style.width="30%";
   const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6},streamFiles:true},meta=>{bar.style.width=(30+Math.round(meta.percent*.65))+"%"});
   const raw=$("buildZipName").value.trim().replace(/[^a-zA-Z0-9а-яА-ЯёЁ_.-]+/g,"-").replace(/^[-.]+|[-.]+$/g,"").slice(0,64)||"my-project";
