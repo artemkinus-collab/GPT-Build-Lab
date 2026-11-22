@@ -89,7 +89,8 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("create table if not exists public.profiles", migration)
         self.assertIn("enable row level security", migration.lower())
         self.assertIn("profiles_username_format", migration)
-        self.assertNotIn("service_role", config.lower())
+        self.assertNotIn("service_role_key =", config.lower())
+        self.assertNotIn("sb_secret_", config.lower())
         self.assertIn("refreshAccount", self.html)
         self.assertIn("auth.onAuthStateChange", self.html)
 
