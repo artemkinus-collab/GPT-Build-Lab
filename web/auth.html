@@ -26,7 +26,7 @@ button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradien
   <button class="submit" id="submit" type="submit">Войти</button>
  </form>
  <div class="status" id="status" role="status" aria-live="polite"></div>
- <div class="note" id="setupNote">Для работы аккаунтов администратор сайта должен один раз подключить Supabase. После настройки здесь будет настоящая регистрация и вход; пароли обрабатывает Supabase Auth, а не сайт.</div>
+ <div class="note" id="setupNote">Регистрация выполняется защищённой серверной функцией Supabase. Письма подтверждения не отправляются; пароль обрабатывает Supabase Auth.</div>
  <a class="back" href="./index.html">← Вернуться в GPT Build Lab</a>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -37,7 +37,7 @@ button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradien
  const config=window.GBL_SUPABASE_CONFIG||{};
  const validConfig=typeof config.url==="string"&&/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.url)&&typeof config.anonKey==="string"&&config.anonKey.length>20&&!config.anonKey.includes("YOUR_");
  if(validConfig&&window.supabase?.createClient)client=window.supabase.createClient(config.url,config.anonKey);
- if(!client){$("setupNote").textContent="Подключение Supabase ещё не настроено. Заполни web/supabase-config.js и выполни SQL-инструкцию из документации проекта. До этого регистрация и вход недоступны."}
+ if(!client){$("setupNote").textContent="Подключение Supabase ещё не настроено. Проверь web/supabase-config.js и настройки проекта."}
  function setStatus(message,success=false){$("status").textContent=message;$("status").classList.toggle("success",success)}
  function setMode(next){
   mode=next;const registering=mode==="register";
@@ -61,9 +61,16 @@ button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradien
   try{
    const internalEmail=username+"@gptbuildlab.example.com";
    if(mode==="register"){
-    const {data,error}=await client.auth.signUp({email:internalEmail,password,options:{data:{username}}});
-    if(error)throw error;
-    if(!data.session){setStatus("Пользователь создан, но Supabase ожидает подтверждение email. Для этой схемы включи Confirm email = OFF в настройках Supabase.");return}
+    const {data,error}=await client.functions.invoke("username-signup",{body:{username,password}});
+    if(error){
+     let detail=error.message||"Не удалось создать аккаунт.";
+     try{const response=error.context;if(response&&typeof response.json==="function"){const body=await response.json();if(body?.error)detail=body.error}}catch{}
+     throw new Error(detail);
+    }
+    if(data?.error)throw new Error(data.error);
+    const {data:loginData,error:loginError}=await client.auth.signInWithPassword({email:internalEmail,password});
+    if(loginError)throw loginError;
+    if(!loginData.session)throw new Error("Аккаунт создан, но сеанс не открылся. Попробуй войти.");
     setStatus("Аккаунт создан. Перенаправляем…",true);
    }else{
     const {data,error}=await client.auth.signInWithPassword({email:internalEmail,password});
@@ -76,7 +83,7 @@ button.submit{border:0;border-radius:12px;padding:13px;background:linear-gradien
    const raw=String(error?.message||"");
    if(/already registered|already been registered|user already exists/i.test(raw))setStatus("Это имя уже занято. Попробуй другое.");
    else if(/invalid login credentials/i.test(raw))setStatus("Неверное имя пользователя или пароль.");
-   else if(/username|profiles_username|gbl_handle_new_user/i.test(raw))setStatus("Не удалось создать профиль. Возможно, имя уже занято или SQL-миграция не применена.");
+   else if(/username|profiles_username|gbl_handle_new_user/i.test(raw))setStatus("Не удалось создать профиль. Проверь SQL-миграции и уникальность имени.");
    else setStatus(raw||"Не удалось выполнить запрос. Проверь подключение и настройки Supabase.");
   }finally{busy=false;$("submit").disabled=false}
  });
