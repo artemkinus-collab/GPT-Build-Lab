@@ -468,7 +468,9 @@ $("buildFiles").addEventListener("change",e=>setBuildFiles(e.target.files));
 $("buildFolder").addEventListener("change",e=>setBuildFiles(e.target.files));
 $("clearBuildFiles").addEventListener("click",()=>{buildState.files=[];$("buildFiles").value="";$("buildFolder").value="";setBuildFiles([]);$("buildResult").className="build-result";$("buildResult").textContent="Список файлов очищен."});
 function validateBuildPath(input){
- const path=String(input||"").replace(/\\\\/g,"/").replace(/^\\/+|\\/+$/g,"");
+ const raw=String(input||"");
+ if(raw.includes(String.fromCharCode(92)))throw Error("Путь с обратной косой чертой запрещён.");
+ const path=raw.replace(/^\\/+|\\/+$/g,"");
  const parts=path.split("/");
  if(!path||parts.some(p=>!p||p==="."||p===".."||p.includes(":")))throw Error("Обнаружен небезопасный путь файла: "+path);
  return path;
