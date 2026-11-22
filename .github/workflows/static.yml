@@ -31,7 +31,7 @@ jobs:
           cp -a web/. _site/
           cp yandex_5966cc9a927df22b.html _site/yandex_5966cc9a927df22b.html
       - name: Upload website artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
