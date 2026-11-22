@@ -46,7 +46,6 @@ class DashboardTests(unittest.TestCase):
                          "projectModal", "authOpen", "accountWrap", "accountOpen", "accountMenu", "statTotal"):
             self.assertIn(required, self.audit.ids)
 
-
     def test_account_entry_points_are_visible(self):
         self.assertIn('href="auth.html"', self.html)
         self.assertIn('id="accountOpen"', self.html)
@@ -84,7 +83,8 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("GBL_SUPABASE_CONFIG", config)
         edge = (ROOT / "supabase" / "functions" / "username-signup" / "index.ts").read_text(encoding="utf-8")
         self.assertIn("email_confirm: true", edge)
-        self.assertIn("SUPABASE_SERVICE_ROLE_KEY", edge)
+        self.assertIn('Deno.env.get("GBL_SUPABASE_SECRET_KEY")', edge)
+        self.assertNotIn("SUPABASE_SERVICE_ROLE_KEY", edge)
         self.assertNotIn("SUPABASE_SERVICE_ROLE_KEY", config)
         self.assertIn("create table if not exists public.profiles", migration)
         self.assertIn("enable row level security", migration.lower())
