@@ -1,4 +1,4 @@
-# Accounts and cloud ZIP builds
+# Accounts and browser ZIP builds
 
 ## Selected architecture
 - Frontend: GitHub Pages (web/).
@@ -18,7 +18,7 @@
 
 ## Required setup (not committed)
 Create a Supabase project and:
-- Apply migrations in order: supabase/migrations/202611210001_initial_schema.sql, then supabase/migrations/202611210002_username_accounts.sql.
+- The existing username/password authentication setup remains unchanged. Apply supabase/migrations/202611220002_profile_avatar_images.sql once to allow custom compressed avatar images.
 - Configure web/supabase-config.js with the public Project URL and anon/publishable key.
 - Deploy `supabase/functions/username-signup` with JWT verification disabled for the public signup endpoint. Keep the service-role key in Edge Function secrets only.\n- Apply `supabase/migrations/202611220001_signup_rate_limit.sql` to enable a five-attempts-per-hour-per-IP registration limit.\n- Email confirmation can remain enabled: the signup function creates users as confirmed and does not send confirmation email.
 - Follow docs/ACCOUNT_SETUP.md for the complete setup and verification checklist.
@@ -33,7 +33,7 @@ Never put service-role keys or GitHub tokens in web/index.html, committed config
 ## Current scope and limitations
 - The first pipeline packages static websites only; it does not execute submitted scripts or install dependencies.
 - Only public GitHub source repositories are supported initially.
-- Successful ZIPs are Actions artifacts; direct authenticated download from the dashboard is a follow-up.
+- Browser ZIP packaging is limited to static sites with root-level index.html; framework build commands and dependency installation are not supported.
 - Add CAPTCHA/bot protection before opening registration widely. The username signup endpoint currently applies a basic IP rate limit; monitor it and adjust carefully.
 - GitHub OAuth is deferred; no OAuth callback is needed for this release.
 
