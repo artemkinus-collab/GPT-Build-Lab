@@ -1,0 +1,3 @@
+# Supabase CLI configuration for GPT Build Lab.
+[functions.username-signup]
+verify_jwt = false
