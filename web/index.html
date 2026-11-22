@@ -12,7 +12,7 @@
 body.dark{color-scheme:dark;--bg:#171624;--panel:#242235;--panel2:#2b293e;--ink:#f0effb;--muted:#aaa7c0;--line:#3c3954;--soft:#383451;--shadow:0 12px 38px #0003;background:radial-gradient(ellipse at 5% 0,#302b55 0,transparent 32%),radial-gradient(ellipse at 95% 8%,#203c4c 0,transparent 27%),var(--bg)}
 button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.shell{max-width:1200px;margin:auto;padding:22px 24px 50px}
 header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:15px;background:linear-gradient(145deg,#8878ef,#65c6d7);display:grid;place-items:center;color:#fff;box-shadow:0 8px 20px #7668df40}.logo svg{width:25px}.brand h1{font-size:18px;margin:0;letter-spacing:-.4px}.brand small{font-size:11px;color:var(--muted)}.header-actions{display:flex;align-items:center;gap:9px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--panel);color:var(--ink);font-size:12px;font-weight:750;transition:.18s}.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}.btn.primary{background:linear-gradient(120deg,#7668df,#9385ee);border-color:transparent;color:white;box-shadow:0 7px 18px #7668df38}.btn.ghost{background:var(--soft);border-color:transparent;color:var(--accent)}.btn.danger{color:var(--red)}.btn.small{padding:7px 10px;font-size:11px}
+.btn[hidden]{display:none!important}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--panel);color:var(--ink);font-size:12px;font-weight:750;transition:.18s}.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}.btn.primary{background:linear-gradient(120deg,#7668df,#9385ee);border-color:transparent;color:white;box-shadow:0 7px 18px #7668df38}.btn.ghost{background:var(--soft);border-color:transparent;color:var(--accent)}.btn.danger{color:var(--red)}.btn.small{padding:7px 10px;font-size:11px}
 nav{display:flex;gap:5px;align-items:center;padding:6px;background:#ffffffa8;border:1px solid #fff;border-radius:16px;box-shadow:0 6px 22px #453d7310;overflow-x:auto;margin-bottom:22px;backdrop-filter:blur(14px)}body.dark nav{background:#242235c9;border-color:var(--line)}
 .navbtn{white-space:nowrap;border:0;background:transparent;color:var(--muted);border-radius:11px;padding:10px 14px;font-size:12px;font-weight:750}.navbtn.active{background:var(--soft);color:var(--accent)}
 .page{display:none;animation:appear .2s ease}.page.active{display:block}@keyframes appear{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -151,6 +151,13 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
    <input id="buildFolder" type="file" webkitdirectory directory multiple hidden>
   </div>
   <div class="build-file-summary" id="buildFileSummary">Файлы ещё не выбраны.</div>
+  <div class="build-step"><span>↗</span><div><strong>Или импортируй публичный репозиторий GitHub</strong><small>Вставь ссылку на репозиторий, укажи ветку и при необходимости подпапку. Файлы будут загружены напрямую в браузер, без Actions и без отправки на сервер Build Lab.</small></div></div>
+  <div class="build-options">
+   <label>Ссылка на репозиторий<input id="buildGitHubRepo" type="url" placeholder="https://github.com/owner/repository"></label>
+   <label>Ветка или тег<input id="buildGitHubRef" maxlength="200" value="main" placeholder="main"></label>
+   <label style="grid-column:1/-1">Папка проекта (необязательно)<input id="buildGitHubPath" maxlength="240" placeholder="Например: web или ."></label>
+  </div>
+  <div class="build-actions"><button class="btn" id="loadGitHubProject" type="button">Загрузить из GitHub</button></div>
   <div class="build-step"><span>2</span><div><strong>Проверь содержимое</strong><small>Для веб-проекта нужен index.html в корне. Секретные файлы блокируются, служебные каталоги исключаются.</small></div></div>
   <div class="build-options">
    <label>Имя ZIP-файла<input id="buildZipName" maxlength="64" value="my-project" placeholder="my-project"></label>
@@ -280,9 +287,9 @@ footer{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px}
   <div class="status"><i class="planned"></i><div><strong>Сборка APK и EXE</strong><span>Эти сборочные среды ещё не подключены.</span></div></div>
   <div class="status"><i class="planned"></i><div><strong>Синхронизация проектов между устройствами</strong><span>Проекты пока хранятся только в браузере, где были созданы.</span></div></div>
  </div></article>
- <p class="caption" style="margin-top:14px">Пакетирование статических сайтов не запускает пользовательские скрипты. Не добавляй в публичные репозитории пароли, приватные ключи, keystore и другие секреты. Версия интерфейса 0.8.</p>
+ <p class="caption" style="margin-top:14px">Пакетирование статических сайтов не запускает пользовательские скрипты. ZIP можно собрать из локальных файлов или публичного GitHub-репозитория прямо в браузере. Не добавляй в архивы пароли, приватные ключи, keystore и другие секреты. Версия интерфейса 0.9.</p>
 </section>
-<footer>GPT Build Lab · Версия 0.8</footer>
+<footer>GPT Build Lab · Версия 0.9</footer>
 </div>
 
 <div class="modal-backdrop" id="projectModal" role="presentation">
@@ -454,9 +461,9 @@ $("avatarUpload").addEventListener("change",async()=>{
 });
 initSettingsSections();applyAvatar();initAccountMenu();
 
-const buildState={files:[],rootPrefix:""};
+const buildState={files:[],rootPrefix:"",remoteEntries:null};
 function setBuildFiles(fileList){
- const all=Array.from(fileList||[]);buildState.files=all;
+ const all=Array.from(fileList||[]);buildState.files=all;buildState.remoteEntries=null;
  const summary=$("buildFileSummary");
  if(!all.length){summary.textContent="Файлы ещё не выбраны.";$("buildZip").disabled=true;$("clearBuildFiles").disabled=true;return}
  const total=all.reduce((n,f)=>n+f.size,0);
@@ -465,7 +472,7 @@ function setBuildFiles(fileList){
 }
 $("buildFiles").addEventListener("change",e=>setBuildFiles(e.target.files));
 $("buildFolder").addEventListener("change",e=>setBuildFiles(e.target.files));
-$("clearBuildFiles").addEventListener("click",()=>{buildState.files=[];$("buildFiles").value="";$("buildFolder").value="";setBuildFiles([]);$("buildResult").className="build-result";$("buildResult").textContent="Список файлов очищен."});
+$("clearBuildFiles").addEventListener("click",()=>{buildState.files=[];buildState.remoteEntries=null;$("buildFiles").value="";$("buildFolder").value="";setBuildFiles([]);$("buildResult").className="build-result";$("buildResult").textContent="Список файлов очищен."});
 function validateBuildPath(input){
  const path=String(input||"");
  if(path.includes(String.fromCharCode(92)))throw Error("Путь с обратной косой чертой запрещён.");
@@ -478,22 +485,71 @@ function isSecretFile(path){
  const name=path.split("/").pop().toLowerCase();
  return [".env",".env.local",".env.production",".npmrc",".pypirc",".netrc","id_rsa","id_ed25519","id_ecdsa","id_dsa","credentials.json","secrets.json","service-account.json","terraform.tfstate"].includes(name)||name.startsWith(".env.")||[".pem",".key",".p12",".pfx",".keystore",".jks"].includes(name.slice(name.lastIndexOf(".")));
 }
+$("loadGitHubProject").addEventListener("click",async()=>{
+ const button=$("loadGitHubProject"),result=$("buildResult"),repoValue=$("buildGitHubRepo").value.trim(),ref=$("buildGitHubRef").value.trim()||"main",folder=$("buildGitHubPath").value.trim().replace(/^\\/+|\\/+$/g,"");
+ const match=repoValue.match(/^https?:\\/\\/github\\.com\\/([A-Za-z0-9_.-]+)\\/([A-Za-z0-9_.-]+)\\/?(?:\\?.*)?$/i);
+ if(!match){notify("Укажи публичную ссылку вида https://github.com/owner/repository");return}
+ if(ref.length>200||ref.startsWith("-")||ref.includes("..")){notify("Проверь название ветки или тега.");return}
+ if(folder&&(folder.startsWith("/")||folder.includes("\\\\")||folder.split("/").some(x=>!x||x==="."||x===".."))){notify("Укажи безопасный относительный путь к папке.");return}
+ if(!window.JSZip){notify("ZIP-библиотека ещё не загрузилась.");return}
+ const owner=match[1],repository=match[2].replace(/\\.git$/i,"");
+ button.disabled=true;button.textContent="Получаем список файлов…";result.className="build-result";result.textContent="Подключаемся к GitHub…";
+ try{
+  const treeUrl="https://api.github.com/repos/"+encodeURIComponent(owner)+"/"+encodeURIComponent(repository)+"/git/trees/"+ref.split("/").map(encodeURIComponent).join("/")+"?recursive=1";
+  const treeResponse=await fetch(treeUrl,{headers:{Accept:"application/vnd.github+json"}});
+  if(!treeResponse.ok)throw Error(treeResponse.status===404?"Репозиторий, ветка или папка не найдены. Проверь ссылку и доступность публичного репозитория.":treeResponse.status===403?"GitHub временно ограничил запросы. Попробуй позже.":"GitHub вернул ошибку "+treeResponse.status+".");
+  const treeData=await treeResponse.json();
+  if(treeData.truncated)throw Error("Репозиторий слишком большой для полного списка файлов GitHub API.");
+  const excluded=new Set([".git",".github",".ssh",".aws",".azure",".terraform","node_modules",".venv","venv","__pycache__",".next",".cache","__MACOSX"]);
+  let items=(treeData.tree||[]).filter(item=>item.type==="blob"&&item.mode!=="120000");
+  if(folder)items=items.filter(item=>item.path.startsWith(folder+"/")).map(item=>({...item,path:item.path.slice(folder.length+1)}));
+  items=items.filter(item=>item.path&&!item.path.split("/").some(part=>excluded.has(part)));
+  if(items.length>10000)throw Error("В выбранном проекте больше 10 000 файлов.");
+  const secret=items.find(item=>isSecretFile(item.path));if(secret)throw Error("Потенциальный секретный файл найден: "+secret.path+". Удали его из GitHub перед упаковкой.");
+  if(!items.some(item=>item.path==="index.html"))throw Error("В выбранной папке не найден index.html в корне.");
+  const declaredSize=items.reduce((sum,item)=>sum+(item.size||0),0);
+  if(declaredSize>100*1024*1024)throw Error("Размер исходных файлов превышает 100 МБ.");
+  let completed=0,total=0;const loaded=new Array(items.length);let cursor=0;
+  button.textContent="Загружаем файлы…";
+  async function worker(){
+   while(cursor<items.length){
+    const index=cursor++,item=items[index];
+    const rawPath=item.path.split("/").map(encodeURIComponent).join("/");
+    const refPath=ref.split("/").map(encodeURIComponent).join("/");
+    const url="https://raw.githubusercontent.com/"+encodeURIComponent(owner)+"/"+encodeURIComponent(repository)+"/"+refPath+"/"+rawPath;
+    const response=await fetch(url);
+    if(!response.ok)throw Error("Не удалось получить файл "+item.path+" (HTTP "+response.status+").");
+    const blob=await response.blob();total+=blob.size;
+    if(total>100*1024*1024)throw Error("Загруженные файлы превышают лимит 100 МБ.");
+    loaded[index]={file:blob,path:item.path};completed++;
+    result.textContent="Загружено "+completed+" из "+items.length+" файлов…";
+   }
+  }
+  await Promise.all(Array.from({length:Math.min(5,items.length)},()=>worker()));
+  buildState.files=[];buildState.remoteEntries=loaded;
+  $("buildFiles").value="";$("buildFolder").value="";
+  $("buildFileSummary").textContent=items.length+" файлов · "+(total/1024/1024).toFixed(2)+" МБ · публичный GitHub: "+owner+"/"+repository+(folder?" / "+folder:"");
+  $("buildZip").disabled=false;$("clearBuildFiles").disabled=false;
+  result.className="build-result success";result.textContent="Исходники получены. Теперь нажми «Собрать ZIP» — архив создастся в браузере.";
+ }catch(error){result.className="build-result error";result.textContent="Не удалось загрузить репозиторий: "+(error.message||"ошибка");buildState.remoteEntries=null}
+ finally{button.disabled=false;button.textContent="Загрузить из GitHub"}
+});
 $("buildZip").addEventListener("click",async()=>{
  if(!window.JSZip){$("buildResult").className="build-result error";$("buildResult").textContent="Библиотека ZIP не загрузилась. Обнови страницу при подключённом интернете.";return}
- const files=buildState.files;if(!files.length)return;
+ const files=buildState.files;if(!files.length&&!buildState.remoteEntries)return;
  const button=$("buildZip"),result=$("buildResult"),progress=$("buildProgress"),bar=$("buildProgressBar");
  button.disabled=true;$("clearBuildFiles").disabled=true;progress.hidden=false;bar.style.width="4%";result.className="build-result";result.textContent="Проверяем файлы…";
  try{
   if(files.length>10000)throw Error("В проекте больше 10 000 файлов.");
   const total=files.reduce((n,f)=>n+f.size,0);if(total>100*1024*1024)throw Error("Размер проекта превышает 100 МБ.");
-  let entries=[];
-  if(files.length===1&&/\\.zip$/i.test(files[0].name)){
+  let entries=buildState.remoteEntries?buildState.remoteEntries.slice():[];
+  if(!buildState.remoteEntries&&files.length===1&&/\\.zip$/i.test(files[0].name)){
    const sourceZip=await JSZip.loadAsync(files[0]);
    entries=Object.values(sourceZip.files).filter(entry=>!entry.dir).map(entry=>({entry,path:validateBuildPath(entry.name)}));
    if(entries.length>10000)throw Error("В ZIP больше 10 000 файлов.");
    const unpacked=entries.reduce((sum,item)=>sum+(item.entry._data?.uncompressedSize||0),0);
    if(unpacked>100*1024*1024)throw Error("Распакованный проект превышает 100 МБ.");
-  }else entries=files.map(file=>({file,path:buildPath(file)}));
+  }else if(!buildState.remoteEntries)entries=files.map(file=>({file,path:buildPath(file)}));
   const excluded=new Set([".git",".github",".ssh",".aws",".azure",".terraform","node_modules",".venv","venv","__pycache__",".next",".cache","__MACOSX"]);
   entries=entries.filter(x=>!x.path.split("/").some(part=>excluded.has(part)));
   const first=entries[0]?.path.split("/")[0];
@@ -508,7 +564,7 @@ $("buildZip").addEventListener("click",async()=>{
   const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=raw.toLowerCase().endsWith(".zip")?raw:raw+".zip";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
   bar.style.width="100%";result.className="build-result success";result.textContent="Готово! Архив "+a.download+" создан: "+entries.length+" файлов, "+(blob.size/1024/1024).toFixed(2)+" МБ. Архив скачивается на устройство.";
  }catch(error){result.className="build-result error";result.textContent="Сборка остановлена: "+(error.message||"неизвестная ошибка");bar.style.width="0%"}
- finally{button.disabled=!buildState.files.length;$("clearBuildFiles").disabled=!buildState.files.length;setTimeout(()=>{progress.hidden=true},1200)}
+ finally{button.disabled=!buildState.files.length&&!buildState.remoteEntries;$("clearBuildFiles").disabled=!buildState.files.length&&!buildState.remoteEntries;setTimeout(()=>{progress.hidden=true},1200)}
 });
 
 function render(){
