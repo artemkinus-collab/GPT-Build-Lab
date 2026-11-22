@@ -8,7 +8,7 @@
 - User-facing static Web ZIP packaging: JSZip in the browser.
 - Public GitHub repository import: GitHub tree API + raw.githubusercontent.com, fetched directly by the browser.
 - CI and Pages deployment: GitHub Actions.
-- Legacy cloud build path: create-web-build Edge Function + build-web.yml. It is not required for user-facing ZIP packaging.
+- User-facing ZIP packaging does not invoke Supabase Edge Functions or GitHub Actions.
 
 ## Browser ZIP lifecycle
 
