@@ -1,86 +1,79 @@
 # GPT Build Lab
 
-GPT Build Lab is a browser-based project workspace published with GitHub Pages. Static Web ZIP archives are created directly in the website, in the user's browser.
+GPT Build Lab — веб-площадка для подготовки проектов и получения сборочных архивов. Основной интерфейс опубликован на GitHub Pages.
 
-> **Current stage:** Static Web ZIP packaging is available directly on the website. Users can select files, a folder, or an existing ZIP and download the resulting archive without opening GitHub Actions. APK and Windows EXE compilation are not implemented yet.
+> **Текущая версия:** ZIP-сборка статических веб-проектов выполняется непосредственно в браузере на сайте. Пользователь выбирает файлы, папку или готовый ZIP, проверяет содержимое и скачивает новый архив. APK и Windows EXE пока не собираются.
 
-## Open the dashboard
+## Открыть сайт
 
 [GPT Build Lab](https://artemkinus-collab.github.io/GPT-Build-Lab/)
 
-## Available: browser-based static Web ZIP packaging
+## ZIP-сборка на сайте
 
-The website's **ZIP-сборка** section accepts multiple files, a folder (where supported by the browser), or an existing ZIP archive.
-- A public GitHub repository in `owner/repository` form.
-- A branch, tag, or commit reference.
-- An optional project subfolder containing a root-level `index.html`.
+1. Открой раздел **ZIP-сборка**.
+2. Добавь отдельные файлы, папку проекта или существующий ZIP-архив.
+3. Укажи имя результата и нажми **Собрать ZIP**.
+4. Готовый архив скачивается прямо на устройство.
 
-Open the site, go to **ZIP-сборка**, choose files/folder/ZIP, and press **Собрать ZIP**. The archive is downloaded directly to the device. Selected project files are not uploaded to a server.\n\nThe browser builder requires a root-level index.html, enforces file-count/size limits, excludes Git/dependency/cache folders, and blocks secret-like files. It does not run npm, shell scripts, build hooks, or project code.
-1. Open [Build Web Artifact](https://github.com/artemkinus-collab/GPT-Build-Lab/actions/workflows/build-web.yml).
-2. Select **Run workflow**.
-3. Enter the public repository, ref, and project folder.
-4. Wait for the workflow to finish successfully.
-5. Download the ZIP from the run's **Artifacts** section.
+Пакетирование выполняется библиотекой JSZip в браузере. Исходные файлы не отправляются на сервер и не требуют GitHub-токена. Для этой операции не нужно открывать GitHub Actions.
 
-The artifact is retained for 7 days. This workflow packages static files only: it does not run npm, shell scripts, build hooks, or other code from the submitted project.
+### Ограничения и проверки
 
-### Packaging safeguards
+- Поддерживаются статические веб-проекты с index.html в корне.
+- До 10 000 файлов и 100 MiB исходных/распакованных данных.
+- Исключаются .git, .github, node_modules, кэши и служебные каталоги.
+- Секретные файлы (.env, приватные ключи, сертификаты, keystore и др.) блокируют сборку.
+- Проектные скрипты не запускаются. Для npm/Vite/React и других систем, которым нужна компиляция, требуется отдельный build-runner.
+- ZIP-библиотека загружается с CDN; для сборки нужно подключение к интернету.
+- На мобильном браузере можно выбрать несколько файлов или готовый ZIP; выбор целой папки зависит от поддержки браузером.
 
-- Requires a root-level `index.html` in the selected project folder.
-- Rejects symbolic links and secret-like files such as `.env`, private key files, and keystores.
-- Excludes dependency and Git metadata folders.
-- Limits input to 10,000 files and 100 MiB uncompressed.
-- Uses read-only repository permissions and does not persist checkout credentials.
+## Аккаунты и профиль
 
-Private source repositories are not supported by this first version. Use only source projects you are authorized to package.
+Сайт использует Supabase Auth для входа по имени пользователя и паролю. Профиль поддерживает готовые аватары, эмодзи и сжатые изображения. Для хранения изображений в профиле нужно применить миграцию 202611220002_profile_avatar_images.sql.
 
-## Account and profile foundation
+Email и восстановление пароля пока не входят в текущий этап. Не нужно менять уже работающую конфигурацию авторизации ради ZIP-сборки.
 
-The repository includes Supabase Auth integration for username/password accounts and private user profiles with RLS. Custom avatar images require applying migration 202611220002_profile_avatar_images.sql. Email recovery is deferred. To activate accounts, follow [Account Setup](docs/ACCOUNT_SETUP.md). Build automation still needs its separate server-side secrets; never put service-role keys or GitHub tokens in the public page.
+## Возможности панели
 
-## Dashboard features
+- Адаптивный интерфейс на русском языке.
+- Управление локальными карточками проектов.
+- Импорт и экспорт JSON-резервных копий.
+- Настройки внешнего вида и профиля.
+- ZIP-сборка непосредственно на сайте.
+- Ссылки на репозиторий и автоматические проверки GitHub Actions.
 
-- Responsive Russian-language interface.
-- Local draft management using browser `localStorage`.
-- JSON import/export with validation.
-- Browser-based ZIP packaging without GitHub credentials or server uploads.
+Черновики проектов хранятся в браузере, где были созданы; облачная синхронизация между устройствами пока не реализована.
 
-Drafts remain in the browser where they were created; they are not uploaded to GitHub.
+## Проверка проекта
 
-## Run validation
+Требуются Python 3.12+ и Node.js для проверки синтаксиса встроенного JavaScript.
 
-Requires Python 3.12+; the JavaScript syntax check additionally requires Node.js.
+    python -m unittest discover -s tests -v
+    python scripts/check_inline_js.py
+    python scripts/validate.py
 
-```bash
-python -m unittest discover -s tests -v
-python scripts/check_inline_js.py
-python scripts/validate.py
-```
+## Текущие ограничения
 
-## Current limitations
+- ZIP-сборка предназначена для статических веб-проектов; она не запускает пользовательский код и не устанавливает зависимости.
+- APK и EXE-пайплайны запланированы, но ещё не доступны.
+- GitHub Actions остаётся для CI, Pages deployment и внутренних проверок; пользовательская ZIP-сборка от него не зависит.
+- Публичные GitHub Pages и репозиторий не предназначены для хранения секретов.
 
-- The Web pipeline packages static files; it does not compile JavaScript frameworks or run custom build commands.
-- APK and EXE pipelines are planned, not available.
-- The dashboard cannot trigger Actions directly because no GitHub token is embedded in the public page. Start the workflow in GitHub Actions.
-- Build artifacts expire after 7 days.
-- GitHub Pages and this repository are public. Never commit secrets, tokens, signing keys, passwords, or private data.
+## Структура проекта
 
-## Project structure
+- web/index.html — панель и браузерная ZIP-сборка.
+- web/auth.html — вход и регистрация по имени пользователя и паролю.
+- web/supabase-config.js — публичные параметры Supabase.
+- scripts/package_web.py — безопасный инструмент упаковки для CI.
+- scripts/validate.py — проверка структуры проекта.
+- scripts/check_inline_js.py — проверка синтаксиса JavaScript.
+- tests/ — регрессионные и упаковочные тесты.
+- .github/workflows/ — CI, публикация Pages и legacy workflow упаковки.
 
-- `web/index.html` — public dashboard and browser ZIP builder.
-- `web/auth.html` — username/password sign-in and registration.
-- `web/supabase-config.js` — public Supabase URL and anon/publishable key placeholders.
-- `scripts/package_web.py` — safe static ZIP packager for CI/internal workflows.
-- `scripts/validate.py` — project sanity checks.
-- `scripts/check_inline_js.py` — inline JavaScript syntax check.
-- `tests/` — regression and packaging safety tests.
-- `.github/workflows/` — validation, Pages deployment, and Web packaging workflows.
+См. план развития docs/ROADMAP.md и матрицу сборок config/build-matrix.json.
 
-See [the roadmap](docs/ROADMAP.md) and [build matrix](config/build-matrix.json).
+## Принципы безопасности
 
-## Security principles
-
-- Keep workflow permissions minimal.
-- Never run untrusted source scripts in packaging jobs.
-- Do not expose GitHub tokens in client-side JavaScript.
-- Review workflow changes before adding privileged release or deployment steps.
+- Не размещать GitHub-токены и Supabase service-role keys в браузерном коде.
+- Не запускать непроверенные скрипты проекта при ZIP-пакетировании.
+- Не добавлять в публичный репозиторий пароли, ключи подписи и приватные данные.
