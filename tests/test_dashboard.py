@@ -61,6 +61,9 @@ class DashboardTests(unittest.TestCase):
             self.assertIn('data-settings-panel="' + section + '"', self.html)
         self.assertIn('data-avatar="✦"', self.html)
         self.assertIn('data-avatar="⚡"', self.html)
+        self.assertIn('data-avatar="🐱"', self.html)
+        self.assertIn('id="avatarUpload"', self.html)
+        self.assertIn("createImageBitmap(file)", self.html)
 
     def test_account_settings_show_live_status_and_secure_password_change(self):
         for required in ("accountStatusTitle", "accountStatusText", "accountProfileUsername",
@@ -71,6 +74,12 @@ class DashboardTests(unittest.TestCase):
         self.assertIn('authRefreshVersion', self.html)
         self.assertIn("Пока используется локальное хранение", self.html)
         self.assertNotIn("Серверная авторизация ещё не активирована", self.html)
+
+    def test_avatar_migration_allows_compressed_images(self):
+        migration = (ROOT / "supabase" / "migrations" / "202611220002_profile_avatar_images.sql").read_text(encoding="utf-8")
+        self.assertIn("drop constraint if exists profiles_avatar_check", migration.lower())
+        self.assertIn("data:image", migration)
+        self.assertIn("160000", migration)
 
     def test_dedicated_auth_page_uses_username_and_password(self):
         auth = (ROOT / "web" / "auth.html").read_text(encoding="utf-8")
@@ -105,7 +114,7 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("auth.onAuthStateChange", self.html)
 
     def test_navigation_order_and_custom_dropdowns(self):
-        order = ['data-page="home"', 'data-page="drafts"', 'data-page="statistics"',
+        order = ['data-page="home"', 'data-page="builder"', 'data-page="drafts"', 'data-page="statistics"',
                  'data-page="github"', 'data-page="settings"', 'data-page="about"']
         positions = [self.html.index(item) for item in order]
         self.assertEqual(positions, sorted(positions))
@@ -128,9 +137,12 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(targets["web"]["status"], "available")
 
     def test_dashboard_discloses_real_build_scope(self):
-        self.assertIn("Упаковка статических сайтов", self.html)
+        self.assertIn("ZIP-сборка в браузере", self.html)
         self.assertIn("Сборка APK и EXE", self.html)
         self.assertIn("не запускает пользовательские скрипты", self.html)
+        self.assertIn('id="buildZip"', self.html)
+        self.assertIn("JSZip.loadAsync", self.html)
+        self.assertIn("Файлы не отправляются на сервер", self.html)
 
     def test_json_import_is_bounded_and_validated(self):
         self.assertIn("f.size>1024*1024", self.html)
