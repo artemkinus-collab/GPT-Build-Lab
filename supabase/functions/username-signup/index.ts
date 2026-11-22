@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
   if (!ip) return json({ error: "Не удалось проверить источник запроса. Попробуй позже." }, 503, origin);
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const serviceRoleKey = Deno.env.get("GBL_SUPABASE_SECRET_KEY");
   if (!supabaseUrl || !serviceRoleKey) {
     return json({ error: "Сервер регистрации ещё не настроен администратором." }, 503, origin);
   }
